@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile 'org.seleniumhq.selenium:selenium-java:2.47.1'
+    compile 'org.testng:testng:6.9.6'
+    compile 'org.hamcrest:hamcrest-all:1.3'
+
+
+}
