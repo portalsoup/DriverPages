@@ -1,6 +1,5 @@
 package com.jcleary.test;
 
-import org.junit.BeforeClass;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -9,7 +8,7 @@ import org.testng.annotations.Test;
 /**
  * Created by julian on 9/15/2015.
  */
-public class TestClass {
+public class TestClassTest {
 
     private TestState state;
 
@@ -30,6 +29,6 @@ public class TestClass {
 
         Selector searchField = SelectorFactory.byCss(state, "input");
 
-        searchField.getWhere((e) -> e.getAttribute("title").equals("Search")).sendKeys("I'm automated!" + Keys.ENTER);
+        searchField.getWhere((e) -> e.getAttribute("title").equals("Search")).sendKeys("Automation" + Keys.ENTER);
     }
 }
