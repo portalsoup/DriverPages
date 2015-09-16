@@ -9,12 +9,15 @@ import static com.jcleary.test.ByFactory.*;
  */
 public class SelectorFactory {
 
-    private String TestState;
+    private TestState testState;
     private String locator;
     private ByFactory by;
 
-    public SelectorFactory(TestState state, ByFactory byFactory) {
+    //TODO this constructor will be so you can manufacture selectors with string formatted differences in the locator
+    public SelectorFactory(TestState testState, String locator, ByFactory byFactory) {
         this.by = byFactory;
+        this.testState = testState;
+        this.locator = locator;
     }
 
 
