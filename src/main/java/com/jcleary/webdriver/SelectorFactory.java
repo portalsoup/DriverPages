@@ -1,8 +1,8 @@
-package com.jcleary.test;
+package com.jcleary.webdriver;
 
-import org.openqa.selenium.By;
+import com.jcleary.core.TestState;
 
-import static com.jcleary.test.ByFactory.*;
+import static com.jcleary.webdriver.ByFactory.*;
 
 /**
  * Created by julian on 9/15/2015.

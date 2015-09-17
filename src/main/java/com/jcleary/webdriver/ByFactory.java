@@ -1,4 +1,4 @@
-package com.jcleary.test;
+package com.jcleary.webdriver;
 
 import org.openqa.selenium.By;
 

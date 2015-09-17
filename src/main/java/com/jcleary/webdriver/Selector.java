@@ -1,5 +1,6 @@
-package com.jcleary.test;
+package com.jcleary.webdriver;
 
+import com.jcleary.core.TestState;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 

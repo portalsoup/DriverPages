@@ -1,4 +1,4 @@
-package com.jcleary.test;
+package com.jcleary.core;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
