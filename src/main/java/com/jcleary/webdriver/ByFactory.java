@@ -26,7 +26,7 @@ public enum ByFactory {
     ByFactory(FunctionalBy by) {
         this.by = by;
     }
-
+    
     public By get(String locator) {
         return by.get(locator);
     }

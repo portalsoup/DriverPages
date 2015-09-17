@@ -1,54 +1,56 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.core.State;
-import lombok.Getter;
+import com.jcleary.core.TestState;
 
 import static com.jcleary.webdriver.ByFactory.*;
 
 /**
- * Manufactures {@link Selector}s as various presets.  Also may store an unformatted locator to dynamically format
- * into new Selector instances.
- *
  * Created by julian on 9/15/2015.
  */
 public class SelectorFactory {
 
-    private State testState;
-
-    @Getter
+    private TestState testState;
     private String locator;
-
-    @Getter
     private ByFactory by;
 
-    /**
-     * Store an unformatted locator. Invoke {@link #get(Object...)} to dynamically instantiate new Selectors using
-     * the formatted locator.
-     *
-     * @param testState The state of this test environment
-     * @param locator The locator for the target node
-     * @param byFactory The type of locator this is using
-     */
-    public SelectorFactory(State testState, String locator, ByFactory byFactory) {
+    //TODO this constructor will be so you can manufacture selectors with string formatted differences in the locator
+    public SelectorFactory(TestState testState, String locator, ByFactory byFactory) {
         this.by = byFactory;
         this.testState = testState;
         this.locator = locator;
     }
 
-    public SelectorFactory(State testState, String locator) {
-        this(testState, locator, CSS);
+
+
+    public static Selector byCss(TestState state, String cssSelector) {
+        return new Selector(state,  cssSelector, CSS);
     }
 
-    /**
-     * Instantiate a new Selector using String formatters to replace format variables with values.
-     * {@link String#format(String, Object...)} is what is used to format the strings and as such
-     * all formatting rules that apply to that method apply here.
-     *
-     * @param vars Variables to be formatted into the locator
-     *
-     * @return A new Selector instance using the formatted locator
-     */
-    public Selector get(Object...vars) {
-        return new Selector(testState, String.format(locator, vars), by);
+    public static Selector byXpath(TestState state, String xpath) {
+        return new Selector(state, xpath, XPATH);
+    }
+
+    public static Selector byId(TestState state, String id) {
+        return new Selector(state, id, ID);
+    }
+
+    public static Selector byLinkText(TestState state, String linkText) {
+        return new Selector(state, linkText, LINK_TEXT);
+    }
+
+    public static Selector byPartialLinkText(TestState state, String linkText) {
+        return new Selector(state, linkText, PARTIAL_LINK_TEXT);
+    }
+
+    public static Selector byName(TestState state, String name) {
+        return new Selector(state, name, NAME);
+    }
+
+    public static Selector byTagName(TestState state, String tagName) {
+        return new Selector(state, tagName, TAG_NAME);
+    }
+
+    public static Selector byClassName(TestState state, String className) {
+        return new Selector(state, className, CLASS_NAME);
     }
 }

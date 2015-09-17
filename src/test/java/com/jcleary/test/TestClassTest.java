@@ -1,5 +1,8 @@
 package com.jcleary.test;
 
+import com.jcleary.core.TestState;
+import com.jcleary.webdriver.Selector;
+import com.jcleary.webdriver.SelectorFactory;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
