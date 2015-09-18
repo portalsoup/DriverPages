@@ -8,8 +8,8 @@ repositories {
 }
 
 dependencies {
-
     compile 'org.seleniumhq.selenium:selenium-java:2.47.1'
+    compile 'com.codeborne:phantomjsdriver:1.2.1'
     compile 'org.testng:testng:6.9.6'
     compile 'org.hamcrest:hamcrest-all:1.3'
 }
