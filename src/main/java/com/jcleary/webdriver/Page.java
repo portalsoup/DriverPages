@@ -1,9 +1,19 @@
 package com.jcleary.webdriver;
 
+import static com.jcleary.core.Ternary.*;
+
+import com.jcleary.core.Ternary;
 import com.jcleary.core.TestState;
 import com.jcleary.exceptions.PageException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.SystemClock;
 
-import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generic page object functionality for storing and using meta-data involving a page object.
@@ -15,15 +25,17 @@ public interface Page {
     /**
      * Declare a page object to have meta-data
      */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
     @interface Info {
 
         /**
          * The hostname that this page is hosted on.  This route will not include any relative portions of the url
          * that would be appended after the TLD (if one exists).
          *
-         * @return The hostname hosting this page.  Such as 'http://www.google.com'
+         * @return                      The hostname hosting this page.  Such as 'http://www.google.com'
          */
-        String host() default "/";
+        String host() default "";
 
         /**
          * The port number that the hostname is currently listening on.
@@ -61,42 +73,46 @@ public interface Page {
      * Unless explicitly stated otherwise, each option
      * is implied to operate implicitly on the first found WebElement that matches it's {@link Selector#locator}.
      */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
     @interface IsLoaded {
 
         /**
-         * Assert the expected state of this element's presence when this page to be considered loaded.
+         * Assert the expected state of this element's presence when this page to be considered loaded.  Declaring
+         * {@link Ternary#TRUE} or {@link Ternary#FALSE} will create an expectation of that state.  Declaring
+         * {@link Ternary#UNKNOWN} will skip it.
          *
          * @return                      True if any single element is located in the DOM of the current page
          */
-        boolean presence() default true;
+        Ternary presence() default UNKNOWN;
 
         /**
-         * Assert the expected state of this element's visiblity when this page to be considered loaded.
+         * Assert the expected state of this element's visiblity when this page to be considered loaded.  Declaring
+         * {@link Ternary#TRUE} or {@link Ternary#FALSE} will create an expectation of that state.  Declaring
+         * {@link Ternary#UNKNOWN} will skip it.
          *
          * @return                      True if the first located element is visible to the user
          */
-        boolean visibility() default false;
+        Ternary visibility() default UNKNOWN;
 
         /**
          * Assert that this element must contain a particular string for this page to be considered loaded.
          *
-         * @return                      True if the first located element contains the provide text
+         * @return                      The text the element must contain
          */
         String containsText() default "";
 
         /**
          * Assert that this element must contain one or more css classes for this page to be considered loaded.
          *
-         * @return                      True if the first located element
-         *                              contains all the declared css classes
+         * @return                      An array of all declared css classes
          */
         String[] containsCssClasses() default "";
 
         /**
          * Assert that this element must contain a particular id attribute for this page to be considered loaded.
          *
-         * @return                      True if the first located element contains
-         *                              an id attribute of the declared value
+         * @return                      The id value as seen in the html id attribute
          */
         String hasId() default "";
 
@@ -104,8 +120,7 @@ public interface Page {
          * Assert a lower bound for the quantity of located elements for this page to be considered loaded.  If
          * {@link #findExactly()} is declared, then this value is ignored.
          *
-         * @return                      True if this annotated Selector locates an equal or
-         *                              greater number of elements than the declared quantity
+         * @return                      A count of the minimum number of WebElements to be expected
          */
         int findAtLeast() default -1;
 
@@ -113,16 +128,14 @@ public interface Page {
          * Assert an upper bound for the quantity of located elements for this page to be considered loaded. If
          * {@link #findExactly()} is declared, then this value is ignored.
          *
-         * @return                      True if this annotated Selector locates less than or
-         *                              equal of number of elements than the declared quantity
+         * @return                      A count of the maximum number of WebElements to be expected
          */
         int findAtMost() default -1;
 
         /**
          * Asserts an exact number of located elements for this page to be considered loaded.
          *
-         * @return                      True if this annotated Selector locates a number
-         *                              of elements equaal to the declared quantity
+         * @return                      A count of the exact number of WebElements to be expected
          */
         int findExactly() default -1;
     }
@@ -137,39 +150,29 @@ public interface Page {
      * Unless explicitly stated otherwise, each option
      * is implied to operate implicitly on the first found WebElement that matches it's {@link Selector#locator}.
      */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
     @interface Loader {
 
         /**
-         * While the page is loading, should this loader element be present in the DOM?
-         *
-         * @return                      True if this loader element is present and locatable
-         *                              in the DOM during the page loading state
-         */
-        boolean presentWhileLoading() default true;
-
-        /**
-         * While the page is loading, should this loader element be visible to the user?
-         *
-         * @return                      True if this loader element is present and visible
-         *                              to the user during the page loading state
-         */
-        boolean visibleWhileLoading() default true;
-
-        /**
-         * When the page finishes loading, should this loader element be present in the DOM?
+         * When the page finishes loading, should this loader element be present in the DOM?  Declaring
+         * {@link Ternary#TRUE} or {@link Ternary#FALSE} will create an expectation of that state.  Declaring
+         * {@link Ternary#UNKNOWN} will skip it.
          *
          * @return                      True if this loader element is expected to be present
          *                              and locatable in the DOM when the page loading completes
          */
-        boolean presentOnFinish() default false;
+        Ternary presentOnFinish() default UNKNOWN;
 
         /**
-         * When the page finishes loading, should this loader element be visible to the user?
+         * When the page finishes loading, should this loader element be visible to the user?  Declaring
+         * {@link Ternary#TRUE} or {@link Ternary#FALSE} will create an expectation of that state.  Declaring
+         * {@link Ternary#UNKNOWN} will skip it.
          *
          * @return                      True if this loader element is expected to be visible
          *                              to the user when the page loading completes
          */
-        boolean visibleOnFinish() default false;
+        Ternary visibleOnFinish() default UNKNOWN;
     }
 
     /**
@@ -186,10 +189,173 @@ public interface Page {
      * Set {@link Info#isLoadedInheritance()} to true for this method to also assert annotated Selectors in the
      * immediate parent class to this page object.
      *
+     * TODO Add logging and create an exception that contains a report instead of just returning false
+     *
      * @return                          True if this page is considered loaded
      */
     default boolean isLoaded() {
-        return false; // TODO
+
+        /*      Order of operations:
+
+                split elements into two lists: ordinary elements and loaders
+
+                for each loader element:
+                    check presence if required
+
+                    check visibility if required
+
+                for each ordinary element:
+                    check presence if required
+
+                    check visibility if required
+
+                    Check containing css classes if required
+
+                    Check id if required
+
+                    if visibility ->
+                        check containing text if required
+
+                    if findExactly ->
+                        check find exactly, skip check for at most and at least
+                    else ->
+                        check find at least if required
+                        check find at most if required
+         */
+
+        Map<Selector, Loader> loaders = new HashMap<>();
+        Map<Selector, IsLoaded> ordinaries = new HashMap<>();
+        Class<?> currentClass = getClass();
+
+        /*
+                Scan for all annotated Selectors that this page is configured to look at.
+
+                While the current class has an Info annotation, if the current class is a parent class and it allows
+                isLoaded inheritance and the current class is assignable from Page:
+         */
+        while (currentClass.getDeclaredAnnotation(Info.class) != null
+                && (
+                        !currentClass.equals(getClass()) &&
+                        ((Info) currentClass.getDeclaredAnnotation(Info.class)).isLoadedInheritance()
+                )
+                && !currentClass.isAssignableFrom(Page.class)) {
+
+            /*
+                Get all the fields in the current class
+             */
+            for (Field f : currentClass.getDeclaredFields()) {
+
+                Object s;
+                IsLoaded isLoaded;
+                Loader loader;
+
+                try {
+                    s = f.get(this); // Get instance
+                } catch (IllegalAccessException e) {
+                    throw new WebDriverException(e);
+                }
+
+                // If our field is a selector
+                if (s instanceof Selector) {
+
+                    isLoaded = f.getDeclaredAnnotation(IsLoaded.class); // Get possible IsLoaded annotation
+                    loader = f.getDeclaredAnnotation(Loader.class); // Get possible Loader annotation
+
+                    if (isLoaded != null) {
+                        ordinaries.put((Selector) s, isLoaded); // Annotated with IsLoaded, put in ordinary map
+                    } else if (loader != null) {
+                        loaders.put((Selector) s, loader); // Annotated with Loader, put in loaders map
+                    }
+                }
+
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+
+        /* We finished scanning for elements, now lets iterate through them and deal with their criteria */
+
+        // Loaders first
+        for (Selector loader : loaders.keySet()) {
+
+            Ternary present = loaders.get(loader).presentOnFinish();
+            Ternary visible = loaders.get(loader).visibleOnFinish();
+
+            if (present != UNKNOWN) {
+                if (present.XNOR(loader.isPresent()) != TRUE) {
+                    return false;
+                }
+            }
+
+            if (visible != UNKNOWN) {
+                if (visible.XNOR(loader.isDisplayed()) != TRUE) {
+                    return false;
+                }
+            }
+
+        }
+
+        for (Selector ordinary : ordinaries.keySet()) {
+
+            Ternary presence = ordinaries.get(ordinary).presence();
+            Ternary visibility = ordinaries.get(ordinary).visibility();
+            String containsText = ordinaries.get(ordinary).containsText();
+            String[] cssClasses = ordinaries.get(ordinary).containsCssClasses();
+            String id = ordinaries.get(ordinary).hasId();
+            int findAtLeast = ordinaries.get(ordinary).findAtLeast();
+            int findAtMost = ordinaries.get(ordinary).findAtMost();
+            int findExactly = ordinaries.get(ordinary).findExactly();
+
+            if (presence != UNKNOWN) {
+                if (presence.XNOR(ordinary.isPresent()) != TRUE) {
+                    return false;
+                }
+            }
+
+            if (visibility != UNKNOWN) {
+                if (visibility.XNOR(ordinary.isDisplayed()) != TRUE) {
+                    return false;
+                }
+            }
+
+            if (containsText != null && !containsText.isEmpty()) {
+                if (!ordinary.getText().contains(containsText)) {
+                    return false;
+                }
+            }
+
+            if (cssClasses != null && cssClasses.length > 0) {
+                String[] fromElement = ordinary.get().getAttribute("class").split(" ");
+                if (!Arrays.asList(fromElement).containsAll(Arrays.asList(cssClasses))) {
+                    return false;
+                }
+            }
+
+            if (id != null && !id.isEmpty()) {
+                if (!ordinary.get().getAttribute("id").equals(id)) {
+                    return false;
+                }
+            }
+
+            if (findExactly >= 0) {
+                if (ordinary.getMultiple().size() != findExactly) {
+                    return false;
+                }
+            } else {
+                if (findAtLeast >= 0) {
+                    if (ordinary.getMultiple().size() < findAtLeast) {
+                        return false;
+                    }
+                }
+
+                if (findAtMost >= 0) {
+                    if (ordinary.getMultiple().size() > findAtMost) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -201,13 +367,23 @@ public interface Page {
      * @return                          True if the page is considered loaded before the duration completes
      */
     default boolean waitUntilLoaded(final long timeout) {
-        return false; // TODO
+
+        Clock clock = new SystemClock();
+
+        long delay = clock.laterBy(timeout);
+
+        while (clock.isNowBefore(delay)) {
+            if (isLoaded()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Search this page object for the {@link Page.Info} class annotation that is storing
      * the hostname that this page uses.  If the annotation isn't found, or if the annotation is found, but
-     * a hostname is not.  The class hierarchy will be crawled until the closest parent with a declared
+     * a hostname is not.  The class hierarchy will be climbed until the closest parent with a declared
      * hostname is found.
      *
      * @return                      The full hostname that this page is hosted in
@@ -218,14 +394,12 @@ public interface Page {
     default String getHostname() {
         Class currentClass = getClass();
         while (!currentClass.getSimpleName().equals("Object")) {
-           for (Annotation anAnnotation : currentClass.getDeclaredAnnotations()) {
-               if (anAnnotation instanceof Info) {
-                   Info info = (Info) anAnnotation;
-                   if (info.host() != null && !info.host().isEmpty()) {
-                       return info.host() + (info.port() == 80 ? "" : ":" + info.port());
-                   }
-               }
-           }
+            Info info = (Info) currentClass.getDeclaredAnnotation(Info.class);
+            if (info != null) {
+                if (info.host() != null && !info.host().isEmpty()) {
+                    return info.host() + (info.port() == 80 ? "" : ":" + info.port());
+                }
+            }
             currentClass = currentClass.getSuperclass();
         }
         throw new PageException("Could not find a hostname on the "
