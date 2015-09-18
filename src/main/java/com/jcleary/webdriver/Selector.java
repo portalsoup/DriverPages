@@ -170,7 +170,7 @@ public class Selector {
      * @exception TimeoutException          If the first found WebElement does not satisfy
      *                                      the predicate before the time limit
      */
-    public Selector waitUntil(Predicate<WebElement> condition) {
+    public Selector waitUntilPredicate(Predicate<WebElement> condition) {
         long delay = clock.now() + TIMEOUT_MILLIS;
 
         WebElement anElement;
@@ -196,6 +196,19 @@ public class Selector {
                 "first found element to match the predicate.");
     }
 
+    public WebElement waitForFirstOccurrenceWhere(Predicate<WebElement> condition) {
+        long delay = clock.now() + TIMEOUT_MILLIS;
+
+        while (clock.isNowBefore(delay)) {
+
+            for (WebElement anElement : getMultiple()) {
+                if (condition.test(anElement)) {
+                    return anElement;
+                }
+            }
+        }
+        throw new TimeoutException("Timed out waiting for the first occurrence of an element that matches the predicate.");
+    }
     /**
      * Wait until the first found WebElement meets the expectations of an ExpectedCondition.
      *
@@ -207,8 +220,9 @@ public class Selector {
      * @exception TimeoutException          If the first found WebElement does not meet
      *                                      the expectations of the ExpectedConditions
      */
-    public Selector waitUntil(ExpectedCondition condition) {
+    public Selector waitUntil(ExpectedCondition<WebElement> condition) {
         new WebDriverWait(state.getDriver(), 10).until(condition);
         return this;
     }
+
 }
