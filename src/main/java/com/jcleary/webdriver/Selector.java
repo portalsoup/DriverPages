@@ -1,12 +1,15 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.TestState;
+import org.omg.CORBA.TIMEOUT;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -66,6 +69,10 @@ public class Selector {
         this.state = state;
         clock = new SystemClock();
         sleeper = Sleeper.SYSTEM_SLEEPER;
+    }
+
+    public String getLocator() {
+        return locator;
     }
 
     /**
@@ -128,6 +135,19 @@ public class Selector {
         return matches;
     }
 
+    public boolean isPresent() {
+        try {
+            get();
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public boolean isDisplayed() {
+        return get().isDisplayed();
+    }
+
     /**
      * Click on the first found WebElement that matches this Selector's {@link #locator}.
      *
@@ -170,7 +190,7 @@ public class Selector {
      * @exception TimeoutException          If the first found WebElement does not satisfy
      *                                      the predicate before the time limit
      */
-    public Selector waitUntilPredicate(Predicate<WebElement> condition) {
+    public Selector waitUntil(Predicate<WebElement> condition) {
         long delay = clock.now() + TIMEOUT_MILLIS;
 
         WebElement anElement;
@@ -196,6 +216,31 @@ public class Selector {
                 "first found element to match the predicate.");
     }
 
+    /**
+     * Wait until the first found WebElement meets the expectations of an ExpectedCondition.
+     *
+     * @param condition                     The ExpectedCondition that should return a true, non-null
+     *                                      value to satisfy the criteria
+     *
+     * @return                              This Selector instance
+     *
+     * @exception TimeoutException          If the first found WebElement does not meet
+     *                                      the expectations of the ExpectedConditions
+     */
+    public Selector waitUntilExpectedCondition(ExpectedCondition<WebElement> condition) {
+        new WebDriverWait(state.getDriver(), 10).until(condition);
+        return this;
+    }
+
+    /**
+     * Wait until this Selector's locator finds at least one WebElement under the given Predicate.
+     *
+     * @param condition The condition to be satisfied.  Returns true or false
+     *
+     * @return                              The first found WebElement
+     *
+     * @exception TimeoutException          If no elements are found within the timeout
+     */
     public WebElement waitForFirstOccurrenceWhere(Predicate<WebElement> condition) {
         long delay = clock.now() + TIMEOUT_MILLIS;
 
@@ -209,20 +254,4 @@ public class Selector {
         }
         throw new TimeoutException("Timed out waiting for the first occurrence of an element that matches the predicate.");
     }
-    /**
-     * Wait until the first found WebElement meets the expectations of an ExpectedCondition.
-     *
-     * @param condition                     The ExpectedCondition that should return a true, non-null
-     *                                      value to satisfy the criteria
-     *
-     * @return                              This Selector instance
-     *
-     * @exception TimeoutException          If the first found WebElement does not meet
-     *                                      the expectations of the ExpectedConditions
-     */
-    public Selector waitUntil(ExpectedCondition<WebElement> condition) {
-        new WebDriverWait(state.getDriver(), 10).until(condition);
-        return this;
-    }
-
 }

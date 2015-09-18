@@ -4,6 +4,7 @@ import com.jcleary.core.TestState;
 import com.jcleary.webdriver.Selector;
 import com.jcleary.webdriver.SelectorFactory;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -42,7 +43,7 @@ public class TestClassTest {
         Selector stats = SelectorFactory.byId(state, "resultStats");
 
         Thread.sleep(1000);
-        stats.waitUntil(ExpectedConditions.visibilityOf(stats.get()));
+        stats.waitUntil(WebElement::isDisplayed);
         System.out.println("The number of results are: " + stats.getText());
     }
 }
