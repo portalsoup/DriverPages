@@ -5,6 +5,7 @@ import static com.jcleary.core.Ternary.*;
 import com.jcleary.core.Ternary;
 import com.jcleary.core.TestState;
 import com.jcleary.exceptions.PageException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SystemClock;
@@ -62,7 +63,7 @@ public interface Page {
          *
          * @return True if the page will inherit IsLoaded criteria from the super class
          */
-        boolean isLoadedInheritance() default true;
+        boolean isLoadedInheritance() default false;
 
     }
 
@@ -84,7 +85,7 @@ public interface Page {
          *
          * @return                      True if any single element is located in the DOM of the current page
          */
-        Ternary presence() default UNKNOWN;
+        Ternary presence() default TRUE;
 
         /**
          * Assert the expected state of this element's visiblity when this page to be considered loaded.  Declaring
@@ -234,11 +235,10 @@ public interface Page {
                 isLoaded inheritance and the current class is assignable from Page:
          */
         while (currentClass.getDeclaredAnnotation(Info.class) != null
-                && (
-                        !currentClass.equals(getClass()) &&
-                        ((Info) currentClass.getDeclaredAnnotation(Info.class)).isLoadedInheritance()
-                )
-                && !currentClass.isAssignableFrom(Page.class)) {
+                && Page.class.isAssignableFrom(currentClass)
+                && (currentClass.equals(getClass()) ||
+                (currentClass.getDeclaredAnnotation(Info.class).isLoadedInheritance()
+                && !currentClass.equals(getClass())))) {
 
             /*
                 Get all the fields in the current class
@@ -250,6 +250,7 @@ public interface Page {
                 Loader loader;
 
                 try {
+                    f.setAccessible(true);
                     s = f.get(this); // Get instance
                 } catch (IllegalAccessException e) {
                     throw new WebDriverException(e);
@@ -318,12 +319,16 @@ public interface Page {
             }
 
             if (containsText != null && !containsText.isEmpty()) {
-                if (!ordinary.getText().contains(containsText)) {
+                try {
+                    if (!ordinary.getText().contains(containsText)) {
+                        return false;
+                    }
+                } catch (NoSuchElementException e) {
                     return false;
                 }
             }
 
-            if (cssClasses != null && cssClasses.length > 0) {
+            if (cssClasses != null && (cssClasses.length == 1 && !cssClasses[0].isEmpty())) {
                 String[] fromElement = ordinary.get().getAttribute("class").split(" ");
                 if (!Arrays.asList(fromElement).containsAll(Arrays.asList(cssClasses))) {
                     return false;

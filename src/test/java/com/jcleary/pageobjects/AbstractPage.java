@@ -4,16 +4,18 @@ import com.jcleary.core.TestState;
 import com.jcleary.webdriver.Page;
 
 /**
- * Created by julian on 9/17/2015.
+ * Abstract implementation to store the page state.
+ *
+ * Created by julian on 9/18/2015.
  */
-@Page.Info(host = "http://reddit.com")
-public class RedditPage implements Page {
+public class AbstractPage implements Page {
 
-    private final TestState state;
+    private TestState state;
 
-    public RedditPage(TestState state) {
+    public AbstractPage(TestState state) {
         this.state = state;
     }
+
     @Override
     public TestState getState() {
         return state;

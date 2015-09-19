@@ -75,6 +75,13 @@ public class Selector {
         return locator;
     }
 
+    public TestState getState() {
+        return state;
+    }
+
+    public By getBy() {
+        return type.get(getLocator());
+    }
     /**
      * Get the first found occurrence of a WebElement that matches this Selector's {@link #locator}.
      *

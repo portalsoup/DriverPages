@@ -2,9 +2,6 @@ package com.jcleary.webdriver;
 
 import com.jcleary.core.TestState;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.jcleary.webdriver.ByFactory.*;
 
 /**
@@ -24,7 +21,9 @@ public class SelectorFactory {
     }
 
     /**
-     * Instantiate a new Selector using TODO
+     * Instantiate a new Selector using String formatters to replace format variables with values.  Treat this in the
+     * same way as a call to System.out.printf(String, Object...) where the string was provided to the constructor
+     * of this object, and the arguments are to be passed in now.
      *
      * @param vars
      *
@@ -34,26 +33,12 @@ public class SelectorFactory {
         return new Selector(testState, String.format(locator, vars), by);
     }
 
-    /**
-     * each row is a unique set of formatter values for the selector this instance manufactures.  A list of selectors
-     * the size of the number of columns will be returned
-     *
-     * @param vars
-     *
-     * @return
-     */
-    public List<Selector> getMultiple(String[][] vars) {
-        List<Selector> multiple = new ArrayList<>();
-
-        for (String[] aSelector : vars) {
-            multiple.add(get(aSelector));
-        }
-
-        return multiple;
-    }
-
     public static Selector byCss(TestState state, String cssSelector) {
         return new Selector(state,  cssSelector, CSS);
+    }
+
+    public static Selector byCss(Selector relativeRootNode, String cssSelector) {
+        return new Selector (relativeRootNode.getState(), relativeRootNode.getLocator().trim() + " " + cssSelector, CSS);
     }
 
     public static Selector byXpath(TestState state, String xpath) {
