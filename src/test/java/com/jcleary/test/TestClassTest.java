@@ -5,14 +5,13 @@ import com.jcleary.webdriver.Selector;
 import com.jcleary.webdriver.SelectorFactory;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.function.Predicate;
-
 /**
+ * A hello world-ish simple test
+ *
  * Created by julian on 9/15/2015.
  */
 public class TestClassTest {
@@ -38,7 +37,7 @@ public class TestClassTest {
 
         searchField.waitForFirstOccurrenceWhere(e -> e.getAttribute("title").equals("Google Search"));
 
-        searchField.getWhere(e -> e.getAttribute("title").equals("Google Search")).sendKeys("Automation" + Keys.ENTER);
+        searchField.getWhere(e -> e.getAttribute("title").equals("Google Search")).sendKeys("Hello world" + Keys.ENTER);
 
         Selector stats = SelectorFactory.byId(state, "resultStats");
 

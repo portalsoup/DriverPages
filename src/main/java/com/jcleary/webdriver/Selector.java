@@ -1,16 +1,15 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.TestState;
-import org.omg.CORBA.TIMEOUT;
+import lombok.Getter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A mechanism to locate elements on demand and perform operations on them.  This class' main goal is to eliminate
@@ -29,12 +28,14 @@ public class Selector {
      * The default timeout in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
+    @Getter
     private static final long TIMEOUT_MILLIS = 10000L;
 
     /**
      * The default polling speed in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
+    @Getter
     private static final long POLLING_MILLIS = 200L;
 
     /**
@@ -50,17 +51,20 @@ public class Selector {
     /**
      * The locator string used to identify one or more WebElements using locator types with Selenium's By.
      */
+    @Getter
     private final String locator;
 
     /**
      * The ByType instance is used to determine the type of locator used by this Selector.
      */
+    @Getter
     private final ByFactory type;
 
     /**
      * The test environment state object that holds all stated information about the test session this Selector
      * is running in.
      */
+    @Getter
     private final TestState state;
 
     Selector(TestState state, String locator, ByFactory type) {
@@ -71,17 +75,10 @@ public class Selector {
         sleeper = Sleeper.SYSTEM_SLEEPER;
     }
 
-    public String getLocator() {
-        return locator;
-    }
-
-    public TestState getState() {
-        return state;
-    }
-
     public By getBy() {
-        return type.get(getLocator());
+        return getType().get(getLocator());
     }
+
     /**
      * Get the first found occurrence of a WebElement that matches this Selector's {@link #locator}.
      *
@@ -105,12 +102,11 @@ public class Selector {
      * @exception NoSuchElementException    If no element is found by WebDriver that satisfies the predicate
      */
     public WebElement getWhere(Predicate<WebElement> condition) {
-        for (WebElement anElement : getMultiple()) {
-            if (condition.test(anElement)) {
-                return anElement;
-            }
+        try {
+            return getMultiple().stream().filter(condition::test).findFirst().get();
+        } catch (java.util.NoSuchElementException e) {
+            throw new NoSuchElementException("Could not find an element that satisfies the predicate.", e);
         }
-        throw new NoSuchElementException("No element found matching the predicate");
     }
 
     /**
@@ -133,13 +129,7 @@ public class Selector {
      *                                      Selector's locator and satisfies the predicate
      */
     public List<WebElement> getMultipleWhere(Predicate<WebElement> condition) {
-        List<WebElement> matches = new ArrayList<>();
-        for (WebElement anElement : getMultiple()) {
-            if (condition.test(anElement)) {
-                matches.add(anElement);
-            }
-        }
-        return matches;
+        return getMultiple().stream().filter(condition::test).collect(toList());
     }
 
     public boolean isPresent() {
@@ -200,24 +190,22 @@ public class Selector {
     public Selector waitUntil(Predicate<WebElement> condition) {
         long delay = clock.now() + TIMEOUT_MILLIS;
 
-        WebElement anElement;
         while (clock.isNowBefore(delay)) {
 
             try {
-                anElement = get();
-                if (condition.test(anElement)) {
+                if (condition.test(get())) {
                     return this;
                 }
             } catch (NoSuchElementException e) {
-                Thread.currentThread().interrupt();
-                throw new WebDriverException(e);
-            } finally {
-                try {
-                    sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
-                } catch (InterruptedException e) {
-                    // TODO Figure this out, this whole method implementation stinks
-                }
+                // Do nothing
             }
+            try {
+                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+
         }
         throw new TimeoutException("Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
                 "first found element to match the predicate.");
@@ -253,11 +241,18 @@ public class Selector {
 
         while (clock.isNowBefore(delay)) {
 
-            for (WebElement anElement : getMultiple()) {
-                if (condition.test(anElement)) {
-                    return anElement;
-                }
+            try {
+                getMultiple().stream().filter(condition::test).findFirst().get();
+            } catch (java.util.NoSuchElementException e) {
+                continue;
             }
+            try {
+                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+
         }
         throw new TimeoutException("Timed out waiting for the first occurrence of an element that matches the predicate.");
     }

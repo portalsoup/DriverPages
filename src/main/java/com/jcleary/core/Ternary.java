@@ -23,41 +23,26 @@ package com.jcleary.core;
  */
 public enum Ternary {
 
-    TRUE(true),
-    UNKNOWN(null),
-    FALSE(false);
-
-    private Boolean val;
-
-    Ternary(Boolean val) {
-        this.val = val;
-    }
-
-    /**
-     * Return this ternary as a boolean using null if unknown.
-     *
-     * @return
-     */
-    public boolean toBoolean() {
-        return this.val;
-    }
+    TRUE,
+    UNKNOWN,
+    FALSE;
 
     /**
      * Squash this ternary value into a boolean defaulting all non-true values to false.
-     * @return
+     *
+     * @return      true if this value is TRUE
+     *              false if this value is FALSE or UNKNOWN
      */
     public boolean squash() {
-        if (this == TRUE) {
-            return true;
-        } else {
-            return false;
-        }
+        return this == TRUE;
     }
 
     /**
      * Perform a logical NOT operation on this ternary value.
      *
-     * @return
+     * @return      TRUE if this value is FALSE
+     *              FALSE if this value is TRUE
+     *              UNKNOWN if this value is UNKNOWN
      */
     public Ternary NOT() {
 
@@ -74,8 +59,11 @@ public enum Ternary {
     /**
      * Perform a logical AND operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value The other value
+     *
+     * @return      TRUE if this value and another valure are both TRUE,
+     *              UNKNOWN if either value is UNKNOWN,
+     *              and FALSE if one is FALSE
      */
     public Ternary AND(Ternary value) {
         if (this == FALSE || value == FALSE) {
@@ -90,8 +78,11 @@ public enum Ternary {
     /**
      * Perform a logical AND operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      TRUE if this value and another valure are both TRUE,
+     *              UNKNOWN if either value is UNKNOWN,
+     *              and FALSE if one is FALSE
      */
     public Ternary AND(boolean value) {
 
@@ -101,36 +92,25 @@ public enum Ternary {
     /**
      * Perform a logical XOR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN,
+     *              TRUE if one value is TRUE, and another value is FALSE
      */
     public Ternary XOR(Ternary value) {
         if (this == UNKNOWN || value == UNKNOWN) {
             return UNKNOWN; // If either value are unknown, then it's still unknown
         }
-
-        // Neither terms are unknown
-        if (this == TRUE) {
-            if (value == TRUE) {
-                return FALSE; // Eqality means false
-            } else if (value == FALSE) {
-                return TRUE; // Inequality means true
-            }
-        } else if (this == FALSE) {
-            if (value == TRUE) {
-                return TRUE; // Inequality again
-            } else if (value == FALSE) {
-                return FALSE; // Equality again
-            }
-        }
-        throw new RuntimeException("Forgot how to math... shit");
+        return (this != value ? TRUE : FALSE);
     }
 
     /**
      * Perform a logical XOR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN,
+     *              TRUE if one value is TRUE, and another value is FALSE
      */
     public Ternary XOR(boolean value) {
         return XOR(value ? TRUE : FALSE);
@@ -139,8 +119,11 @@ public enum Ternary {
     /**
      * Perform a logical OR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      TRUE if either value is TRUE,
+     *              UNKNOWN if neither value are TRUE and one value is UNKNOWN
+     *              else FALSE
      */
     public Ternary OR(Ternary value) {
 
@@ -156,8 +139,11 @@ public enum Ternary {
     /**
      * Perform a logical OR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      TRUE if either value is TRUE,
+     *              UNKNOWN if neither value are TRUE and one value is UNKNOWN
+     *              else FALSE
      */
     public Ternary OR(boolean value) {
         return OR(value ? TRUE : FALSE);
@@ -165,8 +151,12 @@ public enum Ternary {
 
     /**
      * Perform a logical NOR operation with this ternary value and another.
-     * @param value
-     * @return
+     *
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN
+     *              TRUE if both values are FALSE
+     *              else FALSE
      */
     public Ternary NOR(Ternary value) {
         if (this == UNKNOWN || value == UNKNOWN) {
@@ -181,8 +171,12 @@ public enum Ternary {
 
     /**
      * Perform a logical NOR operation with this ternary value and another.
-     * @param value
-     * @return
+     *
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN
+     *              TRUE if both values are FALSE
+     *              else FALSE
      */
     public Ternary NOR(boolean value) {
         return NOR(value ? TRUE : FALSE);
@@ -191,8 +185,11 @@ public enum Ternary {
     /**
      * Perform a logical XNOR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN
+     *              TRUE if this value and another value are equal
+     *              else FALSE
      */
     public Ternary XNOR(Ternary value) {
         if (this == UNKNOWN || value == UNKNOWN) {
@@ -208,8 +205,11 @@ public enum Ternary {
     /**
      * Perform a logical XNOR operation with this ternary value and another.
      *
-     * @param value
-     * @return
+     * @param value Another value
+     *
+     * @return      UNKNOWN if either value is UNKNOWN
+     *              TRUE if this value and another value are equal
+     *              else FALSE
      */
     public Ternary XNOR(boolean value) {
         return XNOR(value ? TRUE : FALSE);
@@ -217,8 +217,12 @@ public enum Ternary {
 
     /**
      * Perform a logical NAND operation with this ternary value and another.
-     * @param value
-     * @return
+     *
+     * @param value Another value
+     *
+     * @return      TRUE if either value is false
+     *              UNKNOWN if no value is FALSE and either value is UNKNOWN
+     *              else FALSE
      */
     public Ternary NAND(Ternary value) {
         if (this == FALSE || value == FALSE) {
@@ -234,8 +238,12 @@ public enum Ternary {
 
     /**
      * Perform a logical NAND operation with this ternary value and another.
-     * @param value
-     * @return
+     *
+     * @param value Another value
+     *
+     * @return      TRUE if either value is false
+     *              UNKNOWN if no value is FALSE and either value is UNKNOWN
+     *              else FALSE
      */
     public Ternary NAND(boolean value) {
         return NAND(value ? TRUE : FALSE);

@@ -1,7 +1,6 @@
 package com.jcleary.test;
 
 import com.jcleary.core.TestState;
-import com.jcleary.pageobjects.reddit.RedditPage;
 import com.jcleary.pageobjects.reddit.RocketLeagueSub;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -10,6 +9,8 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
+ * Base page object for all reddit pages.
+ *
  * Created by julian on 9/17/2015.
  */
 public class RedditPageTest {
@@ -45,8 +46,6 @@ public class RedditPageTest {
 
         assertThat("Did the rocket league subreddit load?", league.isLoaded());
 
-        for (RedditPage.RedditPost aPost : league.getPostsOnPage()) {
-            System.out.println(aPost);
-        }
+        league.getPostsOnPage().forEach(System.out::println);
     }
 }

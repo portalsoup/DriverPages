@@ -15,7 +15,7 @@ import static com.jcleary.core.Ternary.*;
 @Page.Info(relativePath = "/r/rocketleague")
 public class RocketLeagueSub extends RedditPage {
 
-    @IsLoaded(containsText = "RocketLeague", visibility = TRUE)
+    @IsLoaded(containsText = "RocketLeague", visibility = TRUE, findExactly = 2)
     Selector subName = SelectorFactory.byCss(getState(), ".redditname");
 
     public RocketLeagueSub(TestState state) {
