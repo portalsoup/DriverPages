@@ -5,6 +5,9 @@ import com.jcleary.core.TestState;
 import static com.jcleary.webdriver.ByFactory.*;
 
 /**
+ * Manufactures {@link Selector}s as various presets.  Also may store an unformatted locator to dynamically format
+ * into new Selector instances.
+ *
  * Created by julian on 9/15/2015.
  */
 public class SelectorFactory {
@@ -13,7 +16,14 @@ public class SelectorFactory {
     private String locator;
     private ByFactory by;
 
-    //TODO this constructor will be so you can manufacture selectors with string formatted differences in the locator
+    /**
+     * Store an unformatted locator. Invoke {@link #get(Object...)} to dynamically instantiate new Selectors using
+     * the formatted locator.
+     *
+     * @param testState The state of this test environment
+     * @param locator The locator for the target node
+     * @param byFactory The type of locator this is using
+     */
     public SelectorFactory(TestState testState, String locator, ByFactory byFactory) {
         this.by = byFactory;
         this.testState = testState;
@@ -25,11 +35,11 @@ public class SelectorFactory {
      * same way as a call to System.out.printf(String, Object...) where the string was provided to the constructor
      * of this object, and the arguments are to be passed in now.
      *
-     * @param vars
+     * @param vars Variables to be formatted into the locator
      *
-     * @return
+     * @return A new Selector istance using the formatted locator
      */
-    public Selector get(String...vars) {
+    public Selector get(Object...vars) {
         return new Selector(testState, String.format(locator, vars), by);
     }
 

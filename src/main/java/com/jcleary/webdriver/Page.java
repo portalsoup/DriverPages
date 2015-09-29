@@ -12,9 +12,8 @@ import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Generic page object functionality for storing and using meta-data involving a page object.
@@ -41,7 +40,7 @@ public interface Page {
         /**
          * The port number that the hostname is currently listening on.
          *
-         * @return
+         * @return                      The remote listening port
          */
         int port() default 80;
 
@@ -52,7 +51,7 @@ public interface Page {
          *
          * For more information on url variables, refer to: TODO
          *
-         * @return
+         * @return                      The relative path to the current end point
          */
         String relativePath() default "";
 
@@ -379,6 +378,26 @@ public interface Page {
 
         while (clock.isNowBefore(delay)) {
             if (isLoaded()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Wait until the predicate is satisfied and returns true.
+     *
+     * @param condition         A condition to wait for
+     *
+     * @return                  True if the condition is met within the time limit
+     */
+    default boolean waitUntil(Predicate<Page> condition) {
+
+        Clock clock = new SystemClock();
+        long delay = clock.now();
+
+        while (clock.isNowBefore(delay)) {
+            if (condition.test(this)) {
                 return true;
             }
         }

@@ -1,0 +1,10 @@
+Create a Component interface for re-usable components and a Loadable interface that pages and components can both implement.
+Move loading annotations and methods to Loadable.  Right now it only works for pages.  Generalize to be able to check
+that any component is loaded.  Components can be nested inside a pageor another component.  All components should have
+one entry point, and one exit.  Components can additionally declare methods that travel somewhere.  But must either
+continue nesting if the state of the page isn't changing, or return a new page if a redirection happens.
+
+The idea i'm toying with is that pages don't need to declare selectors directly.  Selectors can be defined inside
+re-usable components that can be declared in a page object.  If a component hides it's own internals and provides the
+required entry and exit points.  Then Lombok can be used to expose the components in a fluent way to reduce boilerplate
+code and keep pages concise and readable.
