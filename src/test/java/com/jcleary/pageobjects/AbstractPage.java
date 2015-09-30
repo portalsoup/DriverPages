@@ -1,6 +1,7 @@
 package com.jcleary.pageobjects;
 
 import com.jcleary.core.TestState;
+import com.jcleary.webdriver.Loadable;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.UrlParameter;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.Arrays;
  *
  * Created by julian on 9/18/2015.
  */
-public class AbstractPage implements Page {
+public class AbstractPage implements Page, Loadable {
 
     @Getter
     private TestState state;
