@@ -1,9 +1,7 @@
 package com.jcleary.pageobjects;
 
-import com.jcleary.core.TestState;
 import com.jcleary.webdriver.Component;
 import com.jcleary.webdriver.Loadable;
-import com.jcleary.webdriver.Loadable.IsLoaded;
 import com.jcleary.webdriver.Selector;
 
 /**
@@ -12,7 +10,7 @@ import com.jcleary.webdriver.Selector;
  * @param <T> The owning page to this component.  A valid owner is a page whose {@link IsLoaded} method returns true
  *           when this component's {@link Component#isLoaded()} method also returns true
  */
-public abstract class AbstractComponent<T extends Loadable> implements Component<T>, Loadable {
+public abstract class AbstractComponent<T extends AbstractPage> implements Component<T>, Loadable {
 
     private final T owner;
     private final Selector relativeRootNode;
@@ -30,10 +28,5 @@ public abstract class AbstractComponent<T extends Loadable> implements Component
     @Override
     public Selector getRelativeRootNode() {
         return relativeRootNode;
-    }
-
-    @Override
-    public TestState getState() {
-        return owner.getState();
     }
 }

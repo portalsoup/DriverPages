@@ -1,7 +1,6 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.Ternary;
-import com.jcleary.core.TestState;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.Clock;
@@ -143,12 +142,6 @@ public interface Loadable {
     @interface InheritLoaders {
 
     }
-    /**
-     * Get the TestState instance that contains the state of the test environment, such as the WebDriver instance used.
-     *
-     * @return                          The TestState object being used by the page
-     */
-    TestState getState();
 
     /**
      * Searches this page object for all {@link Selector} instance fields annotated with {@link IsLoaded} or

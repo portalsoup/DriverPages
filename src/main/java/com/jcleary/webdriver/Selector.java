@@ -1,6 +1,6 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.core.TestState;
+import com.jcleary.core.State;
 import lombok.Getter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
@@ -65,9 +65,9 @@ public class Selector {
      * is running in.
      */
     @Getter
-    private final TestState state;
+    private final State state;
 
-    Selector(TestState state, String locator, ByFactory type) {
+    Selector(State state, String locator, ByFactory type) {
         this.locator = locator;
         this.type = type;
         this.state = state;

@@ -1,6 +1,6 @@
 package com.jcleary.test;
 
-import com.jcleary.core.TestState;
+import com.jcleary.state.TestState;
 import com.jcleary.pageobjects.reddit.RocketLeagueSub;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +19,7 @@ public class RedditPageTest {
 
     @BeforeMethod
     public void setupState() {
-        state = new TestState();
+        state = TestState.getInstance();
     }
 
     @AfterMethod

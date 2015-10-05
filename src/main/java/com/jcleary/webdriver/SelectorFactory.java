@@ -1,6 +1,6 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.core.TestState;
+import com.jcleary.core.State;
 
 import static com.jcleary.webdriver.ByFactory.*;
 
@@ -12,7 +12,7 @@ import static com.jcleary.webdriver.ByFactory.*;
  */
 public class SelectorFactory {
 
-    private TestState testState;
+    private State testState;
     private String locator;
     private ByFactory by;
 
@@ -24,7 +24,7 @@ public class SelectorFactory {
      * @param locator The locator for the target node
      * @param byFactory The type of locator this is using
      */
-    public SelectorFactory(TestState testState, String locator, ByFactory byFactory) {
+    public SelectorFactory(State testState, String locator, ByFactory byFactory) {
         this.by = byFactory;
         this.testState = testState;
         this.locator = locator;
@@ -37,13 +37,13 @@ public class SelectorFactory {
      *
      * @param vars Variables to be formatted into the locator
      *
-     * @return A new Selector istance using the formatted locator
+     * @return A new Selector instance using the formatted locator
      */
     public Selector get(Object...vars) {
         return new Selector(testState, String.format(locator, vars), by);
     }
 
-    public static Selector byCss(TestState state, String cssSelector) {
+    public static Selector byCss(State state, String cssSelector) {
         return new Selector(state,  cssSelector, CSS);
     }
 
@@ -51,31 +51,31 @@ public class SelectorFactory {
         return new Selector (relativeRootNode.getState(), relativeRootNode.getLocator().trim() + " " + cssSelector, CSS);
     }
 
-    public static Selector byXpath(TestState state, String xpath) {
+    public static Selector byXpath(State state, String xpath) {
         return new Selector(state, xpath, XPATH);
     }
 
-    public static Selector byId(TestState state, String id) {
+    public static Selector byId(State state, String id) {
         return new Selector(state, id, ID);
     }
 
-    public static Selector byLinkText(TestState state, String linkText) {
+    public static Selector byLinkText(State state, String linkText) {
         return new Selector(state, linkText, LINK_TEXT);
     }
 
-    public static Selector byPartialLinkText(TestState state, String linkText) {
+    public static Selector byPartialLinkText(State state, String linkText) {
         return new Selector(state, linkText, PARTIAL_LINK_TEXT);
     }
 
-    public static Selector byName(TestState state, String name) {
+    public static Selector byName(State state, String name) {
         return new Selector(state, name, NAME);
     }
 
-    public static Selector byTagName(TestState state, String tagName) {
+    public static Selector byTagName(State state, String tagName) {
         return new Selector(state, tagName, TAG_NAME);
     }
 
-    public static Selector byClassName(TestState state, String className) {
+    public static Selector byClassName(State state, String className) {
         return new Selector(state, className, CLASS_NAME);
     }
 }
