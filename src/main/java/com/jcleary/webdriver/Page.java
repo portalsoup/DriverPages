@@ -1,5 +1,6 @@
 package com.jcleary.webdriver;
 
+import com.jcleary.core.State;
 import com.jcleary.exceptions.PageException;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SystemClock;
@@ -41,7 +42,7 @@ public interface Page extends Loadable {
          * particular endpoint.  This path may or may not have variables.  Any dynamic portions of this path can be
          * represented with this pattern: '{{@literal@}uniqueIdentifier parameterValue}'.
          *
-         * For more information on url variables, refer to: TODO
+         * For more information on url variables, refer to: {@link #getRelativePath()}
          *
          * @return                      The relative path to the current end point
          */
@@ -96,22 +97,42 @@ public interface Page extends Loadable {
     }
 
     /**
-     * Search this page object for the {@link Page.Info} class annotation that is storing
-     * the relative path to this page.
+     * Search this page object then each page object in the hierarchical tree for the {@link Page.Info} class
+     * annotation that is storing the relative path to this page.  Each segment of the relative url is inserted at the
+     * beginning of the string for each super page class crawled.
+     *
+     * After the relative url is built, any variables are substituted out.  Url parametres are defined by enclosing
+     * them in curly braces and preceeding by '@'.  Like so: {{@literal@}aVariable}.  Each {@link UrlParameter} passed
+     * to the constructor of this instance will be used to check and replace any uses with it's value.
      *
      * @return                      The full relative path to this page.  Or an empty string if no relative path
      *                              is found.  Or if the path is explicitly set to be empty
      */
     default String getRelativePath() {
-        for (Annotation anAnnotation : getClass().getDeclaredAnnotations()) {
-            if (anAnnotation instanceof Info) {
-                Info info = (Info) anAnnotation;
-                if (info.relativePath() != null && !info.relativePath().isEmpty()) {
-                    return info.relativePath();
+
+        Class<?> currentPage = this.getClass();
+        StringBuilder relativePath = new StringBuilder("");
+
+        // Build url
+        while (Page.class.isAssignableFrom(currentPage)) {
+            for (Annotation anAnnotation : currentPage.getDeclaredAnnotations()) {
+                if (anAnnotation instanceof Info) {
+                    Info info = (Info) anAnnotation;
+                    if (info.relativePath() != null && !info.relativePath().isEmpty()) {
+                        relativePath.insert(0, info.relativePath());
+                    }
                 }
             }
+            currentPage = currentPage.getSuperclass();
         }
-        return "";
+
+        // Substitute variables
+        String fin_relativePath = relativePath.toString();
+        for (UrlParameter urlParameter : getUrlParameters()) {
+            fin_relativePath = fin_relativePath.replaceAll("\\{@" + urlParameter.getKey() + "\\}", urlParameter.getValue());
+        }
+
+        return fin_relativePath;
     }
 
     /**
@@ -123,4 +144,8 @@ public interface Page extends Loadable {
     default String url() {
         return getHostname() + getRelativePath();
     }
+
+    State getState();
+
+    UrlParameter[] getUrlParameters();
 }

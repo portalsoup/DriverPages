@@ -1,11 +1,12 @@
 package com.jcleary.pageobjects.reddit;
 
-import com.jcleary.core.TestState;
+import com.jcleary.state.TestState;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.pageobjects.AbstractPage;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.Selector;
 import com.jcleary.webdriver.SelectorFactory;
+import com.jcleary.webdriver.UrlParameter;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class RedditPage extends AbstractPage {
     Selector postTitle = SelectorFactory.byCss(getState(), "a.title");
     Selector postKarma = SelectorFactory.byCss(getState(), ".score.unvoted");
 
-    public RedditPage(TestState state) {
-        super(state);
+    public RedditPage(TestState state, UrlParameter...parameters) {
+        super(state, parameters);
     }
 
     /**
