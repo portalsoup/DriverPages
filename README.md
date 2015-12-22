@@ -15,9 +15,9 @@ extend and use.
 
 *com.jcleary.webdriver.Selector*: Represents a mechanism to locate elements by css, xpath and other means.  A Selector
 will, in a way, proxy Selenium's WebElement object, offering a very similar API that will instantiate and destroy
-WebElement instances as required to perform actions.  It also provides much more advanced operations you can
+WebElement instances as required to perform actions.  It also provides more advanced operations you can
 perform to an element.  Instances of these are created by SelectorFactory for convenience, which provides more fluid
-readability with it's flow.  And the ability to generate Selectors with dynamic string locators.
+readability and the ability to generate Selectors with dynamically formatted string locators.
 
 *com.jcleary.webdriver.Page*: Declares that an object represents a page, typically having a url that can be traveled
 to (unless it's a single page app). Contains methods and annotations useful for declaring meta data; like the URL
@@ -28,8 +28,9 @@ it's useful html elements.  And methods that perform actions on them either indi
 can have strategies to help dynamically determine when loading is complete, such as a page loading.
 
 *com.jcleary.webdriver.Component*: Declares that an object represents a component within a page.  This will hold a
-reference to it's 'owning' page and allow entry and exit with fluidity.  A page object may hold multiple component
-references.
+reference to it's 'owning' page and allow entry and exit with fluidity.  This can be used to encapsulate a high
+functionality region of the page to help keep pages more concise and manageable.  A page object may hold multiple
+componene references.
 
 *com.jcleary.webdriver.core.State*: Page objects sometimes can benefit from having extra data accessible internally.
 In order to allow page objects to be immutable if desired, this interface can be implemented in such a way that it

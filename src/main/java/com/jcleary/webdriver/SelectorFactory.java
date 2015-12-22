@@ -2,6 +2,8 @@ package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
 
+import java.util.Locale;
+
 import static com.jcleary.webdriver.ByFactory.*;
 
 /**
@@ -35,9 +37,9 @@ public class SelectorFactory {
     }
 
     /**
-     * Instantiate a new Selector using String formatters to replace format variables with values.  Treat this in the
-     * same way as a call to System.out.printf(String, Object...) where the string was provided to the constructor
-     * of this object, and the arguments are to be passed in now.
+     * Instantiate a new Selector using String formatters to replace format variables with values.
+     * {@link String#format(String, Object...)} is what is used to format the strings and as such
+     * all formatting rules that apply to that method apply here.
      *
      * @param vars Variables to be formatted into the locator
      *
