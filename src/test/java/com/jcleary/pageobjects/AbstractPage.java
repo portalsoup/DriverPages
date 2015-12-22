@@ -1,6 +1,6 @@
 package com.jcleary.pageobjects;
 
-import com.jcleary.state.TestState;
+import com.jcleary.core.BasicState;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.UrlParameter;
 import lombok.AccessLevel;
@@ -14,15 +14,15 @@ import lombok.Getter;
 public class AbstractPage implements Page {
 
     @Getter(AccessLevel.PUBLIC)
-    private TestState state;
+    private BasicState state;
 
     private UrlParameter[] parameters;
 
-    public AbstractPage(TestState state) {
+    public AbstractPage(BasicState state) {
         this.state = state;
     }
 
-    public AbstractPage(TestState state, UrlParameter...parameters) {
+    public AbstractPage(BasicState state, UrlParameter...parameters) {
         this(state);
         this.parameters = parameters;
     }

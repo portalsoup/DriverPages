@@ -1,19 +1,14 @@
 package com.jcleary.test.reddit;
 
-import com.jcleary.exceptions.PageException;
+import com.jcleary.core.BasicState;
 import com.jcleary.pageobjects.reddit.VariableSubReddit;
-import com.jcleary.state.TestState;
 import com.jcleary.pageobjects.reddit.RocketLeagueSub;
 import com.jcleary.webdriver.UrlParameter;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
 
 /**
  * Base page object for all reddit pages.
@@ -31,7 +26,7 @@ public class RedditPageTest {
     @Test
     public void simpleRedditNavigationTest() throws InterruptedException {
 
-        try (TestState state = TestState.getInstance()) {
+        try (BasicState state = BasicState.getInstance()) {
             RocketLeagueSub league = new RocketLeagueSub(state);
 
             assertThat("Did the rocket league subreddit load?", !league.isLoaded());
@@ -49,7 +44,7 @@ public class RedditPageTest {
     @Test(enabled = true, dataProvider = "subProvider")
     public void subredditTest(String subName, String formatted) {
 
-        try (TestState state = TestState.getInstance()) {
+        try (BasicState state = BasicState.getInstance()) {
             VariableSubReddit sub = new VariableSubReddit(state, new UrlParameter("subreddit", subName));
 
             state.go(sub.url());

@@ -1,6 +1,6 @@
 package com.jcleary.pageobjects.reddit;
 
-import com.jcleary.state.TestState;
+import com.jcleary.core.BasicState;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.Selector;
 import com.jcleary.webdriver.SelectorFactory;
@@ -18,7 +18,7 @@ public class VariableSubReddit extends RedditPage {
 
     private final Selector subName = SelectorFactory.byCss(getState(), ".redditname");
 
-    public VariableSubReddit(TestState state, UrlParameter... parameters) {
+    public VariableSubReddit(BasicState state, UrlParameter... parameters) {
         super(state, parameters);
     }
 

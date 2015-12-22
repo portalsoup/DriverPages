@@ -67,6 +67,12 @@ public class Selector {
     @Getter
     private final State state;
 
+    /**
+     * Instantiate via {@link SelectorFactory}
+     * @param state
+     * @param locator
+     * @param type
+     */
     Selector(State state, String locator, ByFactory type) {
         this.locator = locator;
         this.type = type;

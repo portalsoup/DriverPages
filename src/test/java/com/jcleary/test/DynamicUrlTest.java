@@ -1,8 +1,8 @@
 package com.jcleary.test;
 
+import com.jcleary.core.BasicState;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.pageobjects.reddit.VariableSubReddit;
-import com.jcleary.state.TestState;
 import com.jcleary.webdriver.UrlParameter;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
@@ -23,14 +23,14 @@ public class DynamicUrlTest {
 
     @Test(expectedExceptions = PageException.class)
     public void badParameterKey() {
-        try (TestState state = mock(TestState.class)) {
+        try (BasicState state = mock(BasicState.class)) {
             new VariableSubReddit(state, new UrlParameter("herpderp", "SampleData")).url();
         }
     }
 
     @Test
     public void goodParameterKey() {
-        try (TestState state = mock(TestState.class)) {
+        try (BasicState state = mock(BasicState.class)) {
             VariableSubReddit sub = new VariableSubReddit(state, new UrlParameter("subreddit", "SampleData"));
 
             String url = sub.url();
