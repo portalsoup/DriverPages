@@ -188,7 +188,8 @@ public class Selector {
      *                                      the predicate before the time limit
      */
     public Selector waitUntil(Predicate<WebElement> condition) {
-        long delay = clock.now() + TIMEOUT_MILLIS;
+        long delay = clock.laterBy(TIMEOUT_MILLIS);
+        Throwable storedException = null;
 
         while (clock.isNowBefore(delay)) {
 
@@ -197,18 +198,25 @@ public class Selector {
                     return this;
                 }
             } catch (NoSuchElementException e) {
-                // Do nothing
+                storedException = e;
             }
             try {
                 sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new RuntimeException(e);
             }
-
         }
-        throw new TimeoutException("Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
-                "first found element to match the predicate.");
+
+        String throwMessage = "Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
+                "first found element to match the predicate.";
+
+        // Check if we have causation
+        if (storedException == null) {
+            throw new TimeoutException(throwMessage);
+        } else {
+            throw new TimeoutException(throwMessage, storedException);
+        }
+
     }
 
     /**

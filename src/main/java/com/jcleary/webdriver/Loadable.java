@@ -147,8 +147,8 @@ public interface Loadable {
      * Searches this page object for all {@link Selector} instance fields annotated with {@link IsLoaded} or
      * {@link Loader} and asserts their criteria to determine if the page has finished loading.
      *
-     * Use {@link com.jcleary.webdriver.Loadable.InheritLoaders} for this method to also assert annotated Selectors in the
-     * immediate parent class to this page object.
+     * Use {@link com.jcleary.webdriver.Loadable.InheritLoaders} for this method to also assert annotated Selectors
+     * in the immediate parent class to this page object.
      *
      * TODO Add logging and create an exception that contains a report instead of just returning false
      *
@@ -160,11 +160,13 @@ public interface Loadable {
 
                 split elements into two lists: ordinary elements and loaders
 
+                First:
                 for each loader element:
                     check presence if required
 
                     check visibility if required
 
+                Second:
                 for each ordinary element:
                     check presence if required
 
@@ -191,13 +193,10 @@ public interface Loadable {
         /*
                 Scan for all annotated Selectors that this page is configured to look at.
 
-                While the current class has an Info annotation, if the current class is a parent class and it allows
-                isLoaded inheritance and the current class is assignable from Page:
+                Climb the hierarchical tree; if currentClass is not this class
          */
-        while (Loadable.class.isAssignableFrom(currentClass)
-                && (currentClass.equals(getClass()) ||
-                (currentClass.getDeclaredAnnotation(InheritLoaders.class) != null
-                        && !currentClass.equals(getClass())))) {
+        while (Loadable.class.isAssignableFrom(currentClass) && currentClass.equals(getClass()) ||
+                currentClass.getDeclaredAnnotation(InheritLoaders.class) != null && !currentClass.equals(getClass())) {
 
             /*
                 Get all the fields in the current class
@@ -256,6 +255,7 @@ public interface Loadable {
 
         for (Selector ordinary : ordinaries.keySet()) {
 
+            // Populate data from annotation
             Ternary presence = ordinaries.get(ordinary).presence();
             Ternary visibility = ordinaries.get(ordinary).visibility();
             String containsText = ordinaries.get(ordinary).containsText();

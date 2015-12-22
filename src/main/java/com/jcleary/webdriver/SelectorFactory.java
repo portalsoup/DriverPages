@@ -30,6 +30,10 @@ public class SelectorFactory {
         this.locator = locator;
     }
 
+    public SelectorFactory(State testState, String locator) {
+        this(testState, locator, CSS);
+    }
+
     /**
      * Instantiate a new Selector using String formatters to replace format variables with values.  Treat this in the
      * same way as a call to System.out.printf(String, Object...) where the string was provided to the constructor
