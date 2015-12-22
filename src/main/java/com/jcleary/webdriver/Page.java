@@ -73,6 +73,36 @@ public interface Page extends Loadable {
     }
 
     /**
+     * Simulate pushing the back button in the browser to return to the previous page.
+     *
+     * @return
+     */
+    default Page back() {
+        getState().getDriver().navigate().back();
+        return this;
+    }
+
+    /**
+     * Simulate pushing the forward button in the browser to navigate forward in history one page.
+     *
+     * @return
+     */
+    default Page forward() {
+        getState().getDriver().navigate().forward();
+        return this;
+    }
+
+    /**
+     * Simulate hitting the refresh button in the browser to refresh the page.
+     *
+     * @return
+     */
+    default Page refresh() {
+        getState().getDriver().navigate().refresh();
+        return this;
+    }
+
+    /**
      * Search this page object for the {@link Page.Info} class annotation that is storing
      * the hostname that this page uses.  If the annotation isn't found, or if the annotation is found, but
      * a hostname is not.  The class hierarchy will be climbed until the closest parent with a declared

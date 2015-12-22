@@ -27,7 +27,7 @@ public interface Loadable {
 
     /**
      * Attach this to {@link Selector} instance fields to expect and depend on one or more elements being in a
-     * particular state as part of the page's criteria to load.
+     * particular state as part of the object's criteria to load.
      *
      * Unless explicitly stated otherwise, each option
      * is implied to operate implicitly on the first found WebElement that matches it's {@link Selector#locator}.
@@ -193,7 +193,7 @@ public interface Loadable {
         /*
                 Scan for all annotated Selectors that this page is configured to look at.
 
-                Climb the hierarchical tree; if currentClass is not this class
+                Climb the hierarchical tree and check each Loadable component for Selectors
          */
         while (Loadable.class.isAssignableFrom(currentClass) && currentClass.equals(getClass()) ||
                 currentClass.getDeclaredAnnotation(InheritLoaders.class) != null && !currentClass.equals(getClass())) {
