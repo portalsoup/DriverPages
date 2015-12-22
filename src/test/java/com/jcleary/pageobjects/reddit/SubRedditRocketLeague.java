@@ -13,12 +13,12 @@ import static com.jcleary.core.Ternary.*;
  * Created by julian on 9/17/2015.
  */
 @Page.Info(relativePath = "/rocketleague")
-public class RocketLeagueSub extends SubReddit {
+public class SubRedditRocketLeague extends SubReddit {
 
     @IsLoaded(containsText = "RocketLeague", visibility = TRUE, findExactly = 2)
     Selector subName = SelectorFactory.byCss(getState(), ".redditname");
 
-    public RocketLeagueSub(BasicState state) {
+    public SubRedditRocketLeague(BasicState state) {
         super(state);
     }
 }

@@ -326,15 +326,15 @@ public interface Loadable {
      * Wait a duration for the page to become considered loaded as dictated by the criteria outlined by
      * {@link #isLoaded()}.
      *
-     * @param timeout                   The maximum number of milliseconds to allow the page to finish loading
+     * @param timeoutMillis             The maximum number of milliseconds to allow the page to finish loading
      *
      * @return                          True if the page is considered loaded before the duration completes
      */
-    default boolean waitUntilLoaded(final long timeout) {
+    default boolean waitUntilLoaded(final long timeoutMillis) {
 
         Clock clock = new SystemClock();
 
-        long delay = clock.laterBy(timeout);
+        long delay = clock.laterBy(timeoutMillis);
 
         while (clock.isNowBefore(delay)) {
             if (isLoaded()) {
