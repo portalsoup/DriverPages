@@ -40,3 +40,11 @@ In order to allow page objects to be immutable if desired, this interface can be
 contains all data a page object may want to have always available.  Such as credentials of a user to be logged in.
 If a page needs no extra data beyond a readily available WebDriver instance (which is the only requirement), then
 BasicState.java can be used.
+
+# Final bits
+
+This framework's goal isn't meant to hide Selenium.  So it's still useful to know a bit about the Selenium library.
+Some good parts of Selenium to look at are:
+https://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/WebDriver.html
+https://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/WebElement.html
+https://selenium.googlecode.com/git/docs/api/java/org/openqa/selenium/support/ui/ExpectedConditions.html

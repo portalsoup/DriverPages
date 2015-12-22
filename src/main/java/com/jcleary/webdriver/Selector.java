@@ -1,6 +1,7 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
+import com.jcleary.util.ExpectedPredicate;
 import lombok.Getter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
@@ -183,7 +184,52 @@ public class Selector {
     }
 
     /**
-     * Wait until the first found WebElement satisfies a predicate.
+     * Wait until the first found WebElement satisfies an object returning predicate.
+     *
+     * @param condition                     A predicate that accepts a WebElement
+     *                                      parameter and results to a null or
+     *                                      non-null value;  null == false
+     *
+     * @return                              This Selector instance
+     *
+     * @exception TimeoutException          If the first found WebElement does not satisfy
+     *                                      the predicate before the time limit
+     */
+    public Selector waitUntil(ExpectedPredicate<WebElement> condition) {
+        long delay = clock.laterBy(TIMEOUT_MILLIS);
+
+        // Stores the latest thrown exception while waiting.
+        Throwable storedException = null;
+
+        while (clock.isNowBefore(delay)) {
+
+            try {
+                if (condition.test(get()) != null) {
+                    return this;
+                }
+            } catch (NoSuchElementException e) {
+                storedException = e;
+            }
+            try {
+                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        String throwMessage = "Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
+                "first found element to match the predicate.";
+
+        // Check if we have causation
+        if (storedException == null) {
+            throw new TimeoutException(throwMessage);
+        } else {
+            throw new TimeoutException(throwMessage, storedException);
+        }
+    }
+
+    /**
+     * Wait until the first found WebElement satisfies a boolean returning predicate.
      *
      * @param condition                     A predicate that accepts a WebElement
      *                                      parameter and results to true or false
@@ -195,6 +241,8 @@ public class Selector {
      */
     public Selector waitUntil(Predicate<WebElement> condition) {
         long delay = clock.laterBy(TIMEOUT_MILLIS);
+
+        // Stores the latest thrown exception while waiting.
         Throwable storedException = null;
 
         while (clock.isNowBefore(delay)) {

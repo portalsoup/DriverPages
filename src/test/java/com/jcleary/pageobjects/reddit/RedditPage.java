@@ -1,5 +1,6 @@
 package com.jcleary.pageobjects.reddit;
 
+import com.jcleary.beans.RedditPost;
 import com.jcleary.core.BasicState;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.pageobjects.AbstractPage;
@@ -19,33 +20,6 @@ import java.util.List;
  */
 @Page.Info(host = "http://reddit.com")
 public class RedditPage extends AbstractPage {
-
-    /**
-     * Encapsulates a single reddit post, containing it's karma and name.
-     */
-    public class RedditPost {
-
-        private String karma;
-        private String name;
-
-        private RedditPost(String karma, String name) {
-            this.karma = karma;
-            this.name = name;
-        }
-
-        public String getKarma() {
-            return karma;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String toString() {
-            return karma + " karma: " + name;
-        }
-    }
 
     // This is our critera to know if we're anywhere on reddit.  (In addition to checking the url which we can do)
     @IsLoaded
@@ -74,7 +48,8 @@ public class RedditPage extends AbstractPage {
             String name = aRow.findElement(postTitle.getBy()).getText();
             String karma = aRow.findElement(postKarma.getBy()).getText();
 
-            posts.add(new RedditPost(karma, name));
+            // Don't care about comments in this sample page.  See VariableSubReddit.java
+            posts.add(new RedditPost(karma, name, -2));
         }
 
         if (posts.isEmpty()) {
