@@ -28,7 +28,7 @@ public class RedditPageTest {
      *
      * @throws InterruptedException
      */
-    //@Test
+    @Test
     public void simpleRedditNavigationTest() throws InterruptedException {
 
         try (TestState state = TestState.getInstance()) {
@@ -46,7 +46,7 @@ public class RedditPageTest {
         }
     }
 
-    //@Test(enabled = true, dataProvider = "subProvider")
+    @Test(enabled = true, dataProvider = "subProvider")
     public void subredditTest(String subName, String formatted) {
 
         try (TestState state = TestState.getInstance()) {
