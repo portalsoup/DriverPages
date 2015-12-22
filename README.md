@@ -8,10 +8,13 @@ A framework for writing Selenium page objects.
 *src/main*: Where the core framework lives.  This is mostly interfaces and WebDriver containing classes to implement,
 extend and use.
 
-*src/test*: Sample implementation of a page object structure and a few TestNG driven tests to perform actions.
+*src/test*: Sample implementation of a page object structure and a few TestNG driven tests to perform actions.  This
+exists mostly in place of a tutorial.  The implementations here are simple and typically will only use a few features
+at a time.  Tests written here are tests I write to test this framework, and can all be run using the ant target 'test'
+to see them in action.  This is frequently updated when I push new commits.
 
 
-# A base overview of the core objects and what they do:
+# A quick overview of the main core objects and what they do:
 
 *com.jcleary.webdriver.Selector*: Represents a mechanism to locate elements by css, xpath and other means.  A Selector
 will, in a way, proxy Selenium's WebElement object, offering a very similar API that will instantiate and destroy
