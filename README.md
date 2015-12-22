@@ -36,7 +36,7 @@ region of a page to help keep pages more concise and manageable.  A page object 
 
 *com.jcleary.webdriver.core.State*: Page objects sometimes can benefit from having extra data accessible internally.
 In order to allow page objects to be immutable if desired, this interface can be implemented in such a way that it
-contains all data a page object may want to have always available.  Such as credentials of a user to be logged in.
+contains all data a page object may want to have readily available.  Such as credentials of a user to be logged in.
 If a page needs no extra data beyond a readily available WebDriver instance (which is the only requirement), then
 BasicState.java can be used.
 
