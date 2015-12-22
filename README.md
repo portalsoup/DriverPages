@@ -31,9 +31,8 @@ it's useful html elements.  And methods that perform actions on them either indi
 can have strategies to help dynamically determine when loading is complete, such as a page loading.
 
 *com.jcleary.webdriver.Component*: Declares that an object represents a component within a page.  This will hold a
-reference to it's 'owning' page and allow entry and exit with fluidity.  This can be used to encapsulate a high
-functionality region of the page to help keep pages more concise and manageable.  A page object may hold multiple
-componene references.
+reference to it's 'owner' page and allow fluid entry and exit.  This can be used to encapsulate a high functionality
+region of a page to help keep pages more concise and manageable.  A page object may hold multiple component references.
 
 *com.jcleary.webdriver.core.State*: Page objects sometimes can benefit from having extra data accessible internally.
 In order to allow page objects to be immutable if desired, this interface can be implemented in such a way that it
