@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.annotation.*;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Generic page object functionality for storing and using meta-data involving a page object.
@@ -40,7 +42,7 @@ public interface Page extends Loadable {
         /**
          * The relative path portion of the url that is appended after the hostname to route to the
          * particular endpoint.  This path may or may not have variables.  Any dynamic portions of this path can be
-         * represented with this pattern: '{{@literal@}uniqueIdentifier parameterValue}'.
+         * represented with this pattern: '{{@literal@}uniqueIdentifier}'.
          *
          * For more information on url variables, refer to: {@link #getRelativePath()}
          *
@@ -130,6 +132,12 @@ public interface Page extends Loadable {
         String fin_relativePath = relativePath.toString();
         for (UrlParameter urlParameter : getUrlParameters()) {
             fin_relativePath = fin_relativePath.replaceAll("\\{@" + urlParameter.getKey() + "\\}", urlParameter.getValue());
+        }
+
+        Matcher m = Pattern.compile("\\{@\\w+\\}").matcher(fin_relativePath);
+
+        if (m.find()) {
+            throw new PageException("Not all required variables have been replaced.  Please inspect the URL: " + fin_relativePath, this);
         }
 
         return fin_relativePath;

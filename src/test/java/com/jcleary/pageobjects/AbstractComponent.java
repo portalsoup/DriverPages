@@ -14,6 +14,8 @@ public abstract class AbstractComponent<T extends AbstractPage> implements Compo
 
     private final T owner;
     private final Selector relativeRootNode;
+
+
     public AbstractComponent(T owner, Selector relativeRootNode) {
         this.owner = owner;
         this.relativeRootNode = relativeRootNode;
