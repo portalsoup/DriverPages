@@ -7,9 +7,7 @@ import com.jcleary.webdriver.UrlParameter;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 /**
