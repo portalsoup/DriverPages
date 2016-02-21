@@ -13,6 +13,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
  * Created by julian on 12/21/2015.
  */
 public class BasicState implements State, AutoCloseable {
+
     @Getter(AccessLevel.PUBLIC)
     @Accessors(fluent = true)
     private static final long GLOBAL_TIMEOUT = 30000L;
