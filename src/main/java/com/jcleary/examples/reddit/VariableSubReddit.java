@@ -1,6 +1,6 @@
-package com.jcleary.pageobjects.reddit;
+package com.jcleary.examples.reddit;
 
-import com.jcleary.beans.RedditPost;
+import com.jcleary.examples.beans.RedditPost;
 import com.jcleary.core.BasicState;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.webdriver.Page;
