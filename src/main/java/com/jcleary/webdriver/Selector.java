@@ -233,11 +233,6 @@ public class Selector {
         return this;
     }
 
-    public Selector sendKeys(String str) {
-        get().sendKeys(str);
-        return this;
-    }
-
     /**
      * If this element is a text entry element, this will clear the value.
      *

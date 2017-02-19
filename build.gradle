@@ -21,7 +21,7 @@ apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
 
 sourceCompatibility = 1.8
-version = '0.10'
+version = '0.12'
 group = 'com.jcleary'
 
 artifactory {
