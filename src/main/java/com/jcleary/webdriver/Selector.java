@@ -2,6 +2,7 @@ package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
 import com.jcleary.util.ExpectedPredicate;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
@@ -31,14 +32,14 @@ public class Selector {
      * The default timeout in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private static final long TIMEOUT_MILLIS = 10000L;
 
     /**
      * The default polling speed in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private static final long POLLING_MILLIS = 200L;
 
     /**
@@ -54,20 +55,20 @@ public class Selector {
     /**
      * The locator string used to identify one or more WebElements using locator types with Selenium's By.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private final String locator;
 
     /**
      * The ByType instance is used to determine the type of locator used by this Selector.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private final ByFactory type;
 
     /**
      * The test environment state object that holds all stated information about the test session this Selector
      * is running in.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private final State state;
 
     /**
@@ -76,7 +77,7 @@ public class Selector {
      * @param locator
      * @param type
      */
-    Selector(State state, String locator, ByFactory type) {
+    public Selector(State state, String locator, ByFactory type) {
         this.locator = locator;
         this.type = type;
         this.state = state;
@@ -84,6 +85,10 @@ public class Selector {
         sleeper = Sleeper.SYSTEM_SLEEPER;
     }
 
+
+    /*/************************
+     * Static Factory Methods *
+     **************************/
 
     public static Selector byCss(State state, String cssSelector) {
         return new Selector(state,  cssSelector, CSS);
@@ -120,6 +125,11 @@ public class Selector {
     public static Selector byClassName(State state, String className) {
         return new Selector(state, className, CLASS_NAME);
     }
+
+
+    /*/****************
+     * Public Methods *
+     ******************/
 
     public By getBy() {
         return getType().get(getLocator());
@@ -202,6 +212,16 @@ public class Selector {
     }
 
     /**
+     * If the first found WebElement is a form, or is an element within a form, this will submit the form.
+     *
+     * @return                              This Selector instance
+     */
+    public Selector submit() {
+        get().submit();
+        return this;
+    }
+
+    /**
      * Send a series of keystrokes to the first WebElement that matches this Selector's {@link #locator}.
      *
      * @param chars                         A string of characters to be sent to an element
@@ -214,57 +234,35 @@ public class Selector {
     }
 
     /**
+     * If this element is a text entry element, this will clear the value.
+     *
+     * @return                              This Selector instance
+     */
+    public Selector clear() {
+        get().clear();
+        return this;
+    }
+
+    /**
+     * Get the html tag name of this element.
+     *
+     * @return                              The tag name of the first found element
+     */
+    public String getTagName() {
+        return get().getTagName();
+    }
+
+    public String getAttribute(String name) {
+        return get().getAttribute(name);
+    }
+
+    /**
      * Get the text of the first found WebElement found by this Selector's {@link #locator}
      *
      * @return                              All visible text contained in the first found WebElement
      */
     public String getText() {
         return get().getText();
-    }
-
-    /**
-     * Wait until the first found WebElement satisfies an object returning predicate.
-     *
-     * @param condition                     A predicate that accepts a WebElement
-     *                                      parameter and results to a null or
-     *                                      non-null value;  null == false
-     *
-     * @return                              This Selector instance
-     *
-     * @exception TimeoutException          If the first found WebElement does not satisfy
-     *                                      the predicate before the time limit
-     */
-    public Selector waitUntil(ExpectedPredicate<WebElement> condition) {
-        long delay = clock.laterBy(TIMEOUT_MILLIS);
-
-        // Stores the latest thrown exception while waiting.
-        Throwable storedException = null;
-
-        while (clock.isNowBefore(delay)) {
-
-            try {
-                if (condition.test(get()) != null) {
-                    return this;
-                }
-            } catch (NoSuchElementException e) {
-                storedException = e;
-            }
-            try {
-                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
-        String throwMessage = "Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
-                "first found element to match the predicate.";
-
-        // Check if we have causation
-        if (storedException == null) {
-            throw new TimeoutException(throwMessage);
-        } else {
-            throw new TimeoutException(throwMessage, storedException);
-        }
     }
 
     /**
