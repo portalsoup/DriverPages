@@ -4,10 +4,7 @@ import com.jcleary.beans.RedditPost;
 import com.jcleary.core.BasicState;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.pageobjects.AbstractPage;
-import com.jcleary.webdriver.Page;
-import com.jcleary.webdriver.Selector;
-import com.jcleary.webdriver.SelectorFactory;
-import com.jcleary.webdriver.UrlParameter;
+import com.jcleary.webdriver.*;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ import java.util.List;
 public class RedditPage extends AbstractPage {
 
     // This is our critera to know if we're anywhere on reddit.  (In addition to checking the url which we can do)
-    @IsLoaded
+    @Loadable.IsLoaded
     Selector subName = SelectorFactory.byCss(getState(), ".redditname");
 
     Selector postRow = SelectorFactory.byClassName(getState(), "thing");
