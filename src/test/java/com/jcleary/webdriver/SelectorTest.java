@@ -1,6 +1,6 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.page.BasicSelectorHtmlPage;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SystemClock;
@@ -17,7 +17,7 @@ public class SelectorTest {
     @Test
     public void loadHtmlTest() throws InterruptedException {
 
-        try (BasicState state = BasicState.getInstance()) {
+        try (State state = State.getInstance()) {
             BasicSelectorHtmlPage page = new BasicSelectorHtmlPage(state);
 
             page.go();
@@ -30,7 +30,7 @@ public class SelectorTest {
     @Test
     public void clickTest() throws InterruptedException {
 
-        try (BasicState state = BasicState.getInstance()) {
+        try (State state = State.getInstance()) {
             BasicSelectorHtmlPage page = new BasicSelectorHtmlPage(state);
 
             page.go();
@@ -47,7 +47,7 @@ public class SelectorTest {
 
     @Test
     public void testWaitUntilVisible() throws InterruptedException {
-            try (BasicState state = BasicState.getInstance()) {
+            try (State state = State.getInstance()) {
                 BasicSelectorHtmlPage page = new BasicSelectorHtmlPage(state);
 
                 Thread.sleep(1000);

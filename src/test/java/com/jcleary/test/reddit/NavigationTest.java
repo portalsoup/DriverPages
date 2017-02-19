@@ -1,7 +1,7 @@
 package com.jcleary.test.reddit;
 
 import com.jcleary.beans.RedditPost;
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.pageobjects.reddit.VariableSubReddit;
 import com.jcleary.webdriver.UrlParameter;
 import org.testng.annotations.Test;
@@ -18,7 +18,7 @@ public class NavigationTest {
 
     @Test
     public void navigateThroughPages() {
-        try (BasicState state = BasicState.getInstance()) {
+        try (State state = State.getInstance()) {
             VariableSubReddit league = new VariableSubReddit(state, new UrlParameter("subreddit", "rocketleague"));
 
             assertThat("Did the rocket league subreddit load?", !league.isLoaded());

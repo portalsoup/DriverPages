@@ -1,6 +1,6 @@
 package com.jcleary.pageobjects.reddit;
 
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.webdriver.Loadable;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.Selector;
@@ -19,7 +19,7 @@ public class SubRedditRocketLeague extends SubReddit {
     @Loadable.IsLoaded(containsText = "RocketLeague", visibility = TRUE, findExactly = 2)
     Selector subName = SelectorFactory.byCss(getState(), ".redditname");
 
-    public SubRedditRocketLeague(BasicState state) {
+    public SubRedditRocketLeague(State state) {
         super(state);
     }
 }

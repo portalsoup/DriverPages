@@ -1,6 +1,6 @@
 package com.jcleary.pageobjects.reddit;
 
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.UrlParameter;
 
@@ -10,11 +10,11 @@ import com.jcleary.webdriver.UrlParameter;
 @Page.Info(relativePath = "/r")
 public class SubReddit extends RedditPage {
 
-    public SubReddit(BasicState state) {
+    public SubReddit(State state) {
         super(state);
     }
 
-    public SubReddit(BasicState state, UrlParameter... parameters) {
+    public SubReddit(State state, UrlParameter... parameters) {
         super(state, parameters);
     }
 }

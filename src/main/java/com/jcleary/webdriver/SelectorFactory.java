@@ -48,40 +48,4 @@ public class SelectorFactory {
     public Selector get(Object...vars) {
         return new Selector(testState, String.format(locator, vars), by);
     }
-
-    public static Selector byCss(State state, String cssSelector) {
-        return new Selector(state,  cssSelector, CSS);
-    }
-
-    public static Selector byCss(Selector relativeRootNode, String cssSelector) {
-        return new Selector (relativeRootNode.getState(), relativeRootNode.getLocator().trim() + " " + cssSelector, CSS);
-    }
-
-    public static Selector byXpath(State state, String xpath) {
-        return new Selector(state, xpath, XPATH);
-    }
-
-    public static Selector byId(State state, String id) {
-        return new Selector(state, id, ID);
-    }
-
-    public static Selector byLinkText(State state, String linkText) {
-        return new Selector(state, linkText, LINK_TEXT);
-    }
-
-    public static Selector byPartialLinkText(State state, String linkText) {
-        return new Selector(state, linkText, PARTIAL_LINK_TEXT);
-    }
-
-    public static Selector byName(State state, String name) {
-        return new Selector(state, name, NAME);
-    }
-
-    public static Selector byTagName(State state, String tagName) {
-        return new Selector(state, tagName, TAG_NAME);
-    }
-
-    public static Selector byClassName(State state, String className) {
-        return new Selector(state, className, CLASS_NAME);
-    }
 }

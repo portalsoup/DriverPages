@@ -1,6 +1,7 @@
 package com.jcleary.page;
 
 import com.jcleary.core.State;
+import com.jcleary.webdriver.Page;
 import com.jcleary.webdriver.Selector;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Created by julian on 6/4/2016.
  */
+@Page.Info(host = "http://${html.host}")
 public class BasicSelectorHtmlPage extends AbstractPage {
 
     public final Selector curtainButton = Selector.byId(getState(), "curtain");

@@ -1,7 +1,7 @@
 package com.jcleary.pageobjects.reddit;
 
 import com.jcleary.beans.RedditPost;
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.exceptions.PageException;
 import com.jcleary.pageobjects.AbstractPage;
 import com.jcleary.webdriver.*;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by julian on 9/17/2015.
  */
 @Page.Info(host = "http://reddit.com")
-public class RedditPage extends AbstractPage {
+public class RedditPage extends Page {
 
     // This is our critera to know if we're anywhere on reddit.  (In addition to checking the url which we can do)
     @Loadable.IsLoaded
@@ -26,7 +26,7 @@ public class RedditPage extends AbstractPage {
     Selector postTitle = SelectorFactory.byCss(getState(), "a.title");
     Selector postKarma = SelectorFactory.byCss(getState(), ".score.unvoted");
 
-    public RedditPage(BasicState state, UrlParameter...parameters) {
+    public RedditPage(State state) {
         super(state, parameters);
     }
 

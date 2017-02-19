@@ -19,8 +19,7 @@ import static com.jcleary.core.Ternary.TRUE;
 import static com.jcleary.core.Ternary.UNKNOWN;
 
 /**
- * Determines that this object is loadable.  Examples of loadable objects are pages or components.  A page that is
- * loadable must
+ * Determines that this object is loadable.
  * Created by julian on 9/29/2015.
  */
 public interface Loadable {

@@ -1,6 +1,7 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
+import com.jcleary.core.store.StateStore;
 import com.jcleary.exceptions.PageException;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SystemClock;
@@ -141,7 +142,10 @@ public abstract class Page {
             Info info = (Info) currentClass.getDeclaredAnnotation(Info.class);
             if (info != null) {
                 if (info.host() != null && !info.host().isEmpty()) {
-                    return info.host() + (info.port() == 80 ? "" : ":" + info.port());
+                    String host = info.host();
+
+                    host = getState().store().interpolate(host);
+                    return host + (info.port() == 80 ? "" : ":" + info.port());
                 }
             }
             currentClass = currentClass.getSuperclass();

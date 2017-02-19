@@ -1,6 +1,6 @@
 package com.jcleary.test.reddit;
 
-import com.jcleary.core.BasicState;
+import com.jcleary.core.State;
 import com.jcleary.pageobjects.reddit.VariableSubReddit;
 import com.jcleary.pageobjects.reddit.SubRedditRocketLeague;
 import com.jcleary.webdriver.UrlParameter;
@@ -26,7 +26,7 @@ public class RedditPageTest {
     @Test
     public void simpleRedditNavigationTest() throws InterruptedException {
 
-        try (BasicState state = BasicState.getInstance()) {
+        try (State state = State.getInstance()) {
             SubRedditRocketLeague league = new SubRedditRocketLeague(state);
 
             assertThat("Did the rocket league subreddit load?", !league.isLoaded());
@@ -44,7 +44,7 @@ public class RedditPageTest {
     @Test(enabled = true, dataProvider = "subProvider")
     public void subredditTest(String subName, String formatted) {
 
-        try (BasicState state = BasicState.getInstance()) {
+        try (State state = State.getInstance()) {
             VariableSubReddit sub = new VariableSubReddit(state, new UrlParameter("subreddit", subName));
 
             state.go(sub.url());

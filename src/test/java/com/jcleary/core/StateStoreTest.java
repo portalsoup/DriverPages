@@ -1,6 +1,6 @@
 package com.jcleary.core;
 
-import com.jcleary.core.store.BasicStore;
+import com.jcleary.core.store.StateStore;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import java.util.List;
 /**
  * Created by portalsoup on 2/16/17.
  */
-public class BasicStoreTest {
+public class StateStoreTest {
 
     @Test
     public void test() {
-        BasicStore store = new BasicStore();
+        StateStore store = new StateStore();
 
         List<String> originalList = new ArrayList<>();
         originalList.add("abc");
