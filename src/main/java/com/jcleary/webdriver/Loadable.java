@@ -1,6 +1,6 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.core.Ternary;
+import com.jcleary.util.Ternary;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.Clock;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.jcleary.core.Ternary.TRUE;
-import static com.jcleary.core.Ternary.UNKNOWN;
+import static com.jcleary.util.Ternary.TRUE;
+import static com.jcleary.util.Ternary.UNKNOWN;
 
 /**
  * Determines that this object is loadable.

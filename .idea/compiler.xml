@@ -19,9 +19,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="DriverPages2_annotationProcessor" target="1.8" />
-      <module name="DriverPages2_main" target="1.8" />
-      <module name="DriverPages2_test" target="1.8" />
+      <module name="DriverPages_annotationProcessor" target="1.8" />
+      <module name="DriverPages_main" target="1.8" />
+      <module name="DriverPages_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,6 +1,7 @@
 package com.jcleary.core.store;
 
 import com.google.common.collect.ImmutableMap;
+import com.jcleary.annotations.Hack;
 import com.jcleary.core.store.exceptions.StoreException;
 import com.jcleary.util.RegexUtil;
 import org.apache.commons.exec.util.MapUtils;
@@ -26,8 +27,10 @@ public class StateStore {
         if (path == null) {
             throw new StoreException("Path can't be null");
         }
-        Object item = store.get(path);
-        if (item == null) {
+        @Hack Object item;
+        try {
+            item = store.get(path);
+        } catch (NullPointerException npe) {
             throw new StoreException("Invalid path <" + path + ">");
         }
         return item;
@@ -62,18 +65,34 @@ public class StateStore {
         store = ImmutableMap.copyOf(map);
     }
 
-    public String interpolate(String str) {
+    public String interpolate(final String str) {
         String result = str;
-        Pattern p = Pattern.compile(RegexUtil.INTERPOLATE_SINGLE.getPattern());
-        Matcher m = p.matcher(str);
-        for (int x = 0; x < m.groupCount(); x++) {
-            String temp = m.group(x);
-            try {
-                result = result.replace("${" + m.group(x) + "}", getItem(temp));
-            } catch (StoreException se) {
-                log.warn("Attempted to interpolate '" + temp + "' but could not find it in the store!");
+        Pattern p;
+        Matcher m;
+
+
+        do {
+            p = Pattern.compile(RegexUtil.INTERPOLATE_SINGLE.getPattern());
+            m = p.matcher(result);
+
+            if (m.find()) {
+                String found = m.group();
+                try {
+                    result = result.replace(found, getItem(purgeCharactersFromString(found, "${}")));
+                } catch (StoreException se) {
+                    throw new StoreException("Attempted to interpolate '" + found + "' but could not find it in the store!");
+                }
+            } else {
+                break;
             }
-        }
+        } while (true);
         return result;
+    }
+
+    private String purgeCharactersFromString(String src, String characters) {
+        for (Character c : characters.toCharArray()) {
+            src = src.replace(c.toString(), "");
+        }
+        return src;
     }
 }

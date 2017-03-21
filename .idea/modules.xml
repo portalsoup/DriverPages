@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/DriverPages.iml" filepath="$PROJECT_DIR$/.idea/modules/DriverPages.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DriverPages2_main.iml" filepath="$PROJECT_DIR$/.idea/modules/DriverPages2_main.iml" group="DriverPages2" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DriverPages2_test.iml" filepath="$PROJECT_DIR$/.idea/modules/DriverPages2_test.iml" group="DriverPages2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DriverPages_main.iml" filepath="$PROJECT_DIR$/.idea/modules/DriverPages_main.iml" group="DriverPages" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/DriverPages_test.iml" filepath="$PROJECT_DIR$/.idea/modules/DriverPages_test.iml" group="DriverPages" />
     </modules>
   </component>
 </project>

@@ -154,19 +154,30 @@ public enum Ternary {
      *
      * @param value Another value
      *
-     * @return      UNKNOWN if either value is UNKNOWN
+     * @return      UNKNOWN if one value is UNKNOWN and one is FALSE
      *              TRUE if both values are FALSE
      *              else FALSE
      */
     public Ternary NOR(Ternary value) {
-        if (this == UNKNOWN || value == UNKNOWN) {
-            return UNKNOWN; // If either value is unknown, then the result is unkonwn
-        }
 
-        if (this == FALSE && value == FALSE) {
-            return TRUE; // If both values are false, then return true.
+        if (this == UNKNOWN) {
+            if (value != TRUE) {
+                return UNKNOWN;
+            } else {
+                return FALSE;
+            }
         }
-        return FALSE; // If there are no unkowns, but both values are not false.  Then we return false.
+        if (value == UNKNOWN) {
+            if (this != TRUE) {
+                return UNKNOWN;
+            } else {
+                return FALSE;
+            }
+        }
+        if (this == FALSE && value == FALSE) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
     /**
@@ -174,7 +185,7 @@ public enum Ternary {
      *
      * @param value Another value
      *
-     * @return      UNKNOWN if either value is UNKNOWN
+     * @return      UNKNOWN if one value is UNKNOWN and the other is FALSE
      *              TRUE if both values are FALSE
      *              else FALSE
      */
@@ -225,15 +236,15 @@ public enum Ternary {
      *              else FALSE
      */
     public Ternary NAND(Ternary value) {
-        if (this == FALSE || value == FALSE) {
-            return TRUE; // If any values are false, then return true.
-        }
 
         if (this == UNKNOWN || value == UNKNOWN) {
-            return UNKNOWN; // If there are no false values, then any unknown will yield an unknown answer.
+            return UNKNOWN; // Any unknown will yield an unknown answer.
+        }
+        if (this == TRUE && value == TRUE) {
+            return FALSE;
         }
 
-        return FALSE; // In the one case where there are no false or unknown values, we return false
+        return TRUE;
     }
 
     /**
@@ -248,4 +259,6 @@ public enum Ternary {
     public Ternary NAND(boolean value) {
         return NAND(value ? TRUE : FALSE);
     }
+
+
 }

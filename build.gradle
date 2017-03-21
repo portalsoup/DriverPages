@@ -1,8 +1,10 @@
 buildscript {
     repositories {
-        jcenter()
+//        jcenter()
+        mavenCentral()
+//        maven { url "https://plugins.gradle.org/m2/" }
         maven {
-            url 'http://localhost:8081/artifactory/gradle-dev-local' // Only works for me for now...
+                url "${artifactory_url}"
             credentials {
                 username = "${artifactory_user}"
                 password = "${artifactory_password}"
@@ -11,21 +13,28 @@ buildscript {
         }
     }
     dependencies {
-        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.4.14"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.8"
     }
 }
 
+plugins {
+    id 'net.saliman.cobertura' version '2.4.0'
+}
+
 apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.artifactory"
+apply plugin: "net.ltgt.apt"
+
 
 sourceCompatibility = 1.8
-version = '0.12'
+version = '0.17'
 group = 'com.jcleary'
 
 artifactory {
-    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    contextUrl = "${artifactory_contextUrl}"
     publish {
         repository {
             repoKey = 'gradle-dev-local'
@@ -59,8 +68,9 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
+    compile group: 'com.jcleary', name: 'misc-java', version: '1.0'
+
     compile 'org.seleniumhq.selenium:selenium-java:2.52.0'
     compile "com.github.detro.ghostdriver:phantomjsdriver:1.1.0"
     compile 'org.testng:testng:6.9.6'
@@ -68,8 +78,20 @@ dependencies {
     compile 'org.mockito:mockito-core:1.10.19'
     compile 'org.projectlombok:lombok:1.16.14'
     compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'org.slf4j:slf4j-simple:1.7.23'
 }
 
+compileJava {
+    options.compilerArgs << "-Xlint:unchecked"
+    aptOptions.annotationProcessing = true
+    aptOptions.processors = [
+            "com.jcleary.annotations.processors.HackProcessor"
+    ]
+}
+
+configurations {
+    apt
+}
 test {
     useTestNG()
 
@@ -99,3 +121,14 @@ test {
         logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
     }
 }
+
+
+cobertura {
+    coverageFormats = ['html']
+    coverageIgnoreTrivial = true
+    coverageIgnores = ['org.slf4j.Logger.*']
+    coverageReportDir = new File("$buildDir/reports/cobertura");
+
+}
+
+test.finalizedBy(project.tasks.cobertura)

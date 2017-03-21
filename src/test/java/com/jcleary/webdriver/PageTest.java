@@ -1,7 +1,7 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
-import com.jcleary.page.BasicSelectorHtmlPage;
+import com.jcleary.sample.page.BasicSelectorHtmlPage;
 import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.mock;

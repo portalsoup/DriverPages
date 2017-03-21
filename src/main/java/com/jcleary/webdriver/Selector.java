@@ -1,18 +1,16 @@
 package com.jcleary.webdriver;
 
+import com.jcleary.annotations.Hack;
 import com.jcleary.core.State;
-import com.jcleary.util.ExpectedPredicate;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static com.jcleary.webdriver.ByFactory.*;
-import static com.jcleary.webdriver.ByFactory.CLASS_NAME;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -32,15 +30,13 @@ public class Selector {
      * The default timeout in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
-    @Getter(AccessLevel.PUBLIC)
-    private static final long TIMEOUT_MILLIS = 10000L;
+    private long timeoutMillis = 10000L;
 
     /**
      * The default polling speed in milliseconds for all methods
      * that wait for an element to change into a particular state.
      */
-    @Getter(AccessLevel.PUBLIC)
-    private static final long POLLING_MILLIS = 200L;
+    private long pollingIntervalPeriodMillis = 200L;
 
     /**
      * Used for getting system time and performing basic operations.
@@ -55,28 +51,19 @@ public class Selector {
     /**
      * The locator string used to identify one or more WebElements using locator types with Selenium's By.
      */
-    @Getter(AccessLevel.PUBLIC)
     private final String locator;
 
     /**
      * The ByType instance is used to determine the type of locator used by this Selector.
      */
-    @Getter(AccessLevel.PUBLIC)
     private final ByFactory type;
 
     /**
      * The test environment state object that holds all stated information about the test session this Selector
      * is running in.
      */
-    @Getter(AccessLevel.PUBLIC)
     private final State state;
 
-    /**
-     * Instantiate via {@link SelectorFactory}
-     * @param state
-     * @param locator
-     * @param type
-     */
     public Selector(State state, String locator, ByFactory type) {
         this.locator = locator;
         this.type = type;
@@ -85,51 +72,33 @@ public class Selector {
         sleeper = Sleeper.SYSTEM_SLEEPER;
     }
 
-
-    /*/************************
-     * Static Factory Methods *
-     **************************/
-
-    public static Selector byCss(State state, String cssSelector) {
-        return new Selector(state,  cssSelector, CSS);
+    public Selector(State state, String cssLocator) {
+        this(state, cssLocator, CSS);
     }
 
-    public static Selector byCss(Selector relativeRootNode, String cssSelector) {
-        return new Selector (relativeRootNode.getState(), relativeRootNode.getLocator().trim() + " " + cssSelector, CSS);
+    public Selector(Selector relativeRootNode, String cssLocator) {
+        this(relativeRootNode.getState(), relativeRootNode.getLocator().trim() + " " + cssLocator);
     }
-
-    public static Selector byXpath(State state, String xpath) {
-        return new Selector(state, xpath, XPATH);
-    }
-
-    public static Selector byId(State state, String id) {
-        return new Selector(state, id, ID);
-    }
-
-    public static Selector byLinkText(State state, String linkText) {
-        return new Selector(state, linkText, LINK_TEXT);
-    }
-
-    public static Selector byPartialLinkText(State state, String linkText) {
-        return new Selector(state, linkText, PARTIAL_LINK_TEXT);
-    }
-
-    public static Selector byName(State state, String name) {
-        return new Selector(state, name, NAME);
-    }
-
-    public static Selector byTagName(State state, String tagName) {
-        return new Selector(state, tagName, TAG_NAME);
-    }
-
-    public static Selector byClassName(State state, String className) {
-        return new Selector(state, className, CLASS_NAME);
-    }
-
 
     /*/****************
      * Public Methods *
      ******************/
+
+    public long getTimeoutMillis() {
+        return timeoutMillis;
+    }
+
+    public void setTimeoutMillis(long timeoutMillis) {
+        this.timeoutMillis = timeoutMillis;
+    }
+
+    public long getPollingIntervalPeriodMillis() {
+        return pollingIntervalPeriodMillis;
+    }
+
+    public void setPollingIntervalPeriodMillis(long pollingIntervalPeriodMillis) {
+        this.pollingIntervalPeriodMillis = pollingIntervalPeriodMillis;
+    }
 
     public By getBy() {
         return getType().get(getLocator());
@@ -277,7 +246,7 @@ public class Selector {
      *                                      the predicate before the time limit
      */
     public Selector waitUntil(Predicate<WebElement> condition) {
-        long delay = clock.laterBy(TIMEOUT_MILLIS);
+        long delay = clock.laterBy(timeoutMillis);
 
         // Stores the latest thrown exception while waiting.
         Throwable storedException = null;
@@ -292,13 +261,13 @@ public class Selector {
                 storedException = e;
             }
             try {
-                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
+                sleeper.sleep(new Duration(pollingIntervalPeriodMillis, TimeUnit.MILLISECONDS));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
 
-        String throwMessage = "Timed out after " + TIMEOUT_MILLIS + " milliseconds waiting for the " +
+        String throwMessage = "Timed out after " + timeoutMillis + " milliseconds waiting for the " +
                 "first found element to match the predicate.";
 
         // Check if we have causation
@@ -336,17 +305,24 @@ public class Selector {
      * @exception TimeoutException          If no elements are found within the timeout
      */
     public WebElement waitForFirstOccurrenceWhere(Predicate<WebElement> condition) {
-        long delay = clock.now() + TIMEOUT_MILLIS;
+        long delay = clock.now() + timeoutMillis;
 
         while (clock.isNowBefore(delay)) {
 
             try {
-                getMultiple().stream().filter(condition::test).findFirst().get();
-            } catch (java.util.NoSuchElementException e) {
+                Optional<WebElement> maybeWebElement = getMultiple()
+                        .stream()
+                        .filter(condition)
+                        .findFirst();
+
+                if (maybeWebElement.isPresent()) {
+                    return maybeWebElement.get();
+                }
+            } catch (NoSuchElementException e) {
                 continue;
             }
             try {
-                sleeper.sleep(new Duration(POLLING_MILLIS, TimeUnit.MILLISECONDS));
+                sleeper.sleep(new Duration(pollingIntervalPeriodMillis, TimeUnit.MILLISECONDS));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
@@ -354,5 +330,17 @@ public class Selector {
 
         }
         throw new TimeoutException("Timed out waiting for the first occurrence of an element that matches the predicate.");
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public String getLocator() {
+        return locator;
+    }
+
+    public ByFactory getType() {
+        return type;
     }
 }

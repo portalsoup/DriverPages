@@ -1,12 +1,14 @@
 package com.jcleary.webdriver;
 
 import com.jcleary.core.State;
-import com.jcleary.core.store.StateStore;
 import com.jcleary.exceptions.PageException;
+import org.apache.commons.collections.ListUtils;
 import org.openqa.selenium.support.ui.Clock;
 import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.annotation.*;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -139,8 +141,13 @@ public abstract class Page {
     public String getHostname() {
         Class currentClass = getClass();
         while (!currentClass.getSimpleName().equals("Object")) {
-            Info info = (Info) currentClass.getDeclaredAnnotation(Info.class);
-            if (info != null) {
+            Annotation[] annotation = currentClass.getDeclaredAnnotations();
+            Optional<Annotation> maybeInfo = Arrays.stream(annotation)
+                    .filter(a -> a.annotationType().equals(Info.class))
+                    .findFirst();
+
+            if (maybeInfo.isPresent()) {
+                Info info = (Info) maybeInfo.get();
                 if (info.host() != null && !info.host().isEmpty()) {
                     String host = info.host();
 

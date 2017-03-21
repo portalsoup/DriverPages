@@ -3,7 +3,7 @@ package com.jcleary.webdriver;
 import org.openqa.selenium.By;
 
 /**
- * Allows selecting and passing Selenium By types as values.  Calling {@link #get(String)} will instantiate a new By
+ *  Allows selecting and passing Selenium By types as values.  Calling {@link #get(String)} will instantiate a new By
  * object of consistent type with the enum constant.
  *
  * Created by julian on 9/16/2015.
