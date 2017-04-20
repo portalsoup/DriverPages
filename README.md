@@ -1,5 +1,7 @@
 # DriverPages
 
+Generic lightweight page object model framework for web app automation.  
+
 One example of building page objects:
 
 The use of Selectors and the state store are completely optional
