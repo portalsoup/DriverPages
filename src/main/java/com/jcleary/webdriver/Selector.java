@@ -1,6 +1,5 @@
 package com.jcleary.webdriver;
 
-import com.jcleary.annotations.Hack;
 import com.jcleary.core.State;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;

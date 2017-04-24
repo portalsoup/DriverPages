@@ -1,6 +1,5 @@
 package com.jcleary.core.store;
 
-import com.jcleary.annotations.Hack;
 import com.jcleary.core.store.exceptions.StoreException;
 import org.testng.annotations.Test;
 

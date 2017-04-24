@@ -1,7 +1,6 @@
 package com.jcleary.core.store;
 
 import com.google.common.collect.ImmutableMap;
-import com.jcleary.annotations.Hack;
 import com.jcleary.core.store.exceptions.StoreException;
 import com.jcleary.util.RegexUtil;
 import org.apache.commons.exec.util.MapUtils;
@@ -27,7 +26,7 @@ public class StateStore {
         if (path == null) {
             throw new StoreException("Path can't be null");
         }
-        @Hack Object item;
+        Object item;
         try {
             item = store.get(path);
         } catch (NullPointerException npe) {

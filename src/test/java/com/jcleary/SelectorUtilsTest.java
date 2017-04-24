@@ -1,6 +1,5 @@
 package com.jcleary;
 
-import com.jcleary.annotations.Hack;
 import com.jcleary.core.State;
 import com.jcleary.webdriver.ByFactory;
 import com.jcleary.webdriver.Selector;
