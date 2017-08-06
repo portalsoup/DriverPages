@@ -44,7 +44,7 @@ The use of Selectors and the state store are completely optional
         }
 
         /**
-         * Perform a search on the reddit front page.
+         * Perform a search on the reddit front page.  The stored value in the state with the key "reddit.search" is used.
          * 
          * @return A page object that maps the reddit search page.
          */
@@ -60,7 +60,7 @@ The use of Selectors and the state store are completely optional
         }
 
         /**
-         * Attempt to wait until a previously searched term successfully navigated to the next web page.  
+         * Attempt to wait until a previously searched term successfully navigated to the next web page.
          * @return
          */
         public boolean verifySearch() {
