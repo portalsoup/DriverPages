@@ -58,20 +58,6 @@ The use of Selectors and the state store are completely optional
                     .click();
             return new SearchPage(this);
         }
-
-        /**
-         * Attempt to wait until a previously searched term successfully navigated to the next web page.
-         * @return
-         */
-        public boolean verifySearch() {
-            this.waitUntil(p ->
-                    p.getState()
-                            .getDriver()
-                            .getCurrentUrl()
-                            .contains("https://www.reddit.com/search")
-            );
-            return getState().getDriver().getCurrentUrl().contains("?q=" + store.<String>getItem("reddit.search"));
-        }
     } 
 
     // Adds /search to the end of the url of it's parent
@@ -86,11 +72,25 @@ The use of Selectors and the state store are completely optional
         public SearchPage(Page page) {
             super(page);
         }
+        
+         /**
+         * Attempt to wait until a previously searched term successfully navigated to the search page.
+         * @return
+         */
+        public boolean verifySearch() {
+            this.waitUntil(p ->
+                    p.getState()
+                            .getDriver()
+                            .getCurrentUrl()
+                            .contains("https://www.reddit.com/search")
+            );
+            return getState().getDriver().getCurrentUrl().contains("?q=" + store.<String>getItem("reddit.search"));
+        }
 
     }
  
 
-Using these page objects could be done like so:
+Using these page objects could be done like this:
 
         try (State state = new State()) {
             state.store().update("reddit.search", "Pikachu");
